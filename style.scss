@@ -1,0 +1,228 @@
+* {
+  box-sizing: border-box;
+  user-select: none;
+}
+
+body {
+  margin: 0;
+  padding: 0;
+  color: rgb(255, 62, 191);
+  font-family: 'Lobster', cursive;
+}
+
+img {
+  width: 100%;
+  height: auto;
+}
+
+@mixin styleOfButtonFrame() {
+  //border: 2px solid red;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(255, 255, 255, 0.842);
+  top: 0;
+  left: 0;
+  font-size: 80px;
+  z-index: 50;
+}
+
+@mixin styleOfParagraph() {
+  margin: 0;
+  margin-top: 90px;
+  position: relative;
+}
+
+@mixin styleOfButton() {
+  font-family: Cambria, Cochin, Georgia, Times, 'Times New Roman', serif;
+  letter-spacing: 1px;
+  font-size: 40px;
+  outline: 0;
+  background-color: rgb(252, 99, 226);
+  color: white;
+  border-radius: 20px;
+  border: 2px solid rgb(235, 18, 18);
+  margin-bottom: 20px;
+  width: 50%;
+}
+
+@mixin hover() {
+  &hover {
+    cursor: pointer;
+    background-color: rgb(253, 0, 198);
+  }
+}
+
+@keyframes spin {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
+}
+
+.container {
+  height: 100%;
+
+  #game-container {
+    text-align: center;
+    margin: auto;
+    width: 50%;
+    position: relative;
+
+
+    h1 {
+      margin: 0;
+    }
+
+    #info {
+      display: none;
+      padding: 80px 45px 0;
+
+      p {
+        margin: 0;
+        padding: 0;
+        font-size: 24px;
+      }
+    }
+
+    #game-board {
+      position: relative;
+      width: fit-content;
+      margin: auto;
+
+
+      .cell {
+        z-index: 1;
+        padding: 5px;
+        border: 2px solid rgb(242, 142, 255);
+      }
+
+      .cell:hover {
+        cursor: pointer;
+        border: 2px solid red;
+      }
+
+      .onSelect {
+        background-color: rgb(92, 231, 250);
+        border: 2px solid red;
+      }
+    }
+
+    #game-over {
+      @include styleOfButtonFrame;
+      display: none;
+      position: absolute;
+
+      p {
+        @include styleOfParagraph;
+      }
+
+      .level-container {
+        display: flex;
+        flex-wrap: wrap;
+
+        .level-btn {
+          flex-basis: 100%;
+          height: 70px;
+
+          button {
+            @include styleOfButton;
+          }
+        }
+      }
+
+      @include hover;
+    }
+
+    #win-game {
+      @include styleOfButtonFrame;
+      display: none;
+
+      p {
+        @include styleOfParagraph;
+      }
+
+      .level-container {
+        display: flex;
+        flex-wrap: wrap;
+
+        .level-btn {
+          flex-basis: 100%;
+          height: 70px;
+
+          button {
+            @include styleOfButton;
+          }
+        }
+      }
+
+      @include hover;
+    }
+
+    #level {
+      @include styleOfButtonFrame;
+
+      p {
+        @include styleOfParagraph;
+        margin-bottom: 20px;
+      }
+
+      .level-container {
+        display: flex;
+        flex-wrap: wrap;
+
+        .level-btn {
+          flex-basis: 100%;
+          height: 70px;
+
+          button {
+            @include styleOfButton;
+          }
+        }
+      }
+
+      @include hover;
+    }
+
+
+    #reload {
+      border: 2px solid red;
+      width: 100%;
+      height: 100%;
+      background-color: rgba(255, 255, 255, 0.842);
+      top: 0;
+      left: 0;
+      font-size: 40px;
+      z-index: 50;
+      position: absolute;
+      display: none;
+
+      p {
+        margin: 0;
+        margin-top: 100px;
+      }
+
+      #reloader {
+        width: 150px;
+        height: 150px;
+        margin: 30px auto;
+        border-top: 10px solid red;
+        border-bottom: 10px solid rgb(228, 22, 176);
+        border-left: 10px solid cyan;
+        border-right: 10px solid rgb(62, 62, 252);
+        border-radius: 50%;
+        -webkit-animation: spin 2s linear infinite; /* Safari */
+        animation: spin 2s linear infinite;
+      }
+    }
+
+    #myCanvas {
+      position: absolute;
+      top: 0;
+      left: 0;
+      z-index: -1;
+    }
+
+  }
+}

@@ -1,0 +1,218 @@
+* {
+  box-sizing: border-box;
+  user-select: none;
+}
+
+body {
+  margin: 0;
+  padding: 0;
+  color: rgb(255, 62, 191);
+  font-family: "Lobster", cursive;
+}
+
+img {
+  width: 100%;
+  height: auto;
+}
+
+@keyframes spin {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
+}
+.container {
+  height: 100%;
+}
+.container #game-container {
+  text-align: center;
+  margin: auto;
+  width: 50%;
+  position: relative;
+}
+.container #game-container h1 {
+  margin: 0;
+}
+.container #game-container #info {
+  display: none;
+  padding: 80px 45px 0;
+}
+.container #game-container #info p {
+  margin: 0;
+  padding: 0;
+  font-size: 24px;
+}
+.container #game-container #game-board {
+  position: relative;
+  width: fit-content;
+  margin: auto;
+}
+.container #game-container #game-board .cell {
+  z-index: 1;
+  padding: 5px;
+  border: 2px solid rgb(242, 142, 255);
+}
+.container #game-container #game-board .cell:hover {
+  cursor: pointer;
+  border: 2px solid red;
+}
+.container #game-container #game-board .onSelect {
+  background-color: rgb(92, 231, 250);
+  border: 2px solid red;
+}
+.container #game-container #game-over {
+  width: 100%;
+  height: 100%;
+  background-color: rgba(255, 255, 255, 0.842);
+  top: 0;
+  left: 0;
+  font-size: 80px;
+  z-index: 50;
+  display: none;
+  position: absolute;
+}
+.container #game-container #game-over p {
+  margin: 0;
+  margin-top: 90px;
+  position: relative;
+}
+.container #game-container #game-over .level-container {
+  display: flex;
+  flex-wrap: wrap;
+}
+.container #game-container #game-over .level-container .level-btn {
+  flex-basis: 100%;
+  height: 70px;
+}
+.container #game-container #game-over .level-container .level-btn button {
+  font-family: Cambria, Cochin, Georgia, Times, "Times New Roman", serif;
+  letter-spacing: 1px;
+  font-size: 40px;
+  outline: 0;
+  background-color: rgb(252, 99, 226);
+  color: white;
+  border-radius: 20px;
+  border: 2px solid rgb(235, 18, 18);
+  margin-bottom: 20px;
+  width: 50%;
+}
+.container #game-container #game-overhover {
+  cursor: pointer;
+  background-color: rgb(253, 0, 198);
+}
+.container #game-container #win-game {
+  width: 100%;
+  height: 100%;
+  background-color: rgba(255, 255, 255, 0.842);
+  top: 0;
+  left: 0;
+  font-size: 80px;
+  z-index: 50;
+  display: none;
+}
+.container #game-container #win-game p {
+  margin: 0;
+  margin-top: 90px;
+  position: relative;
+}
+.container #game-container #win-game .level-container {
+  display: flex;
+  flex-wrap: wrap;
+}
+.container #game-container #win-game .level-container .level-btn {
+  flex-basis: 100%;
+  height: 70px;
+}
+.container #game-container #win-game .level-container .level-btn button {
+  font-family: Cambria, Cochin, Georgia, Times, "Times New Roman", serif;
+  letter-spacing: 1px;
+  font-size: 40px;
+  outline: 0;
+  background-color: rgb(252, 99, 226);
+  color: white;
+  border-radius: 20px;
+  border: 2px solid rgb(235, 18, 18);
+  margin-bottom: 20px;
+  width: 50%;
+}
+.container #game-container #win-gamehover {
+  cursor: pointer;
+  background-color: rgb(253, 0, 198);
+}
+.container #game-container #level {
+  width: 100%;
+  height: 100%;
+  background-color: rgba(255, 255, 255, 0.842);
+  top: 0;
+  left: 0;
+  font-size: 80px;
+  z-index: 50;
+}
+.container #game-container #level p {
+  margin: 0;
+  margin-top: 90px;
+  position: relative;
+  margin-bottom: 20px;
+}
+.container #game-container #level .level-container {
+  display: flex;
+  flex-wrap: wrap;
+}
+.container #game-container #level .level-container .level-btn {
+  flex-basis: 100%;
+  height: 70px;
+}
+.container #game-container #level .level-container .level-btn button {
+  font-family: Cambria, Cochin, Georgia, Times, "Times New Roman", serif;
+  letter-spacing: 1px;
+  font-size: 40px;
+  outline: 0;
+  background-color: rgb(252, 99, 226);
+  color: white;
+  border-radius: 20px;
+  border: 2px solid rgb(235, 18, 18);
+  margin-bottom: 20px;
+  width: 50%;
+}
+.container #game-container #levelhover {
+  cursor: pointer;
+  background-color: rgb(253, 0, 198);
+}
+.container #game-container #reload {
+  border: 2px solid red;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(255, 255, 255, 0.842);
+  top: 0;
+  left: 0;
+  font-size: 40px;
+  z-index: 50;
+  position: absolute;
+  display: none;
+}
+.container #game-container #reload p {
+  margin: 0;
+  margin-top: 100px;
+}
+.container #game-container #reload #reloader {
+  width: 150px;
+  height: 150px;
+  margin: 30px auto;
+  border-top: 10px solid red;
+  border-bottom: 10px solid rgb(228, 22, 176);
+  border-left: 10px solid cyan;
+  border-right: 10px solid rgb(62, 62, 252);
+  border-radius: 50%;
+  -webkit-animation: spin 2s linear infinite; /* Safari */
+  animation: spin 2s linear infinite;
+}
+.container #game-container #myCanvas {
+  position: absolute;
+  top: 0;
+  left: 0;
+  z-index: -1;
+}
+
+/*# sourceMappingURL=style.css.map */
