@@ -213,6 +213,7 @@ function drawCells() {
         // Đặt zIndex của canvas thành -1 để đảm bảo nó nằm dưới các phần tử khác
         myCanvas.style.zIndex = -1;
     }, 300);
+    addEventForCell();
 }
 
 function isPossibleToMoveLeft(row) {
@@ -225,10 +226,10 @@ function isPossibleToMoveLeft(row) {
     }
     for (let i = 1; i < boardWidth - 1; i++) {
         if (cells[i + row * boardWidth].value !== 0 && i > index) {
-            return true;
+            return false;
         }
     }
-    return false;
+    return true;
 }
 
 function check0CellInRowLeft(start, row) {
@@ -241,10 +242,10 @@ function check0CellInRowLeft(start, row) {
 }
 
 function swapCellX(k, index, row) {
-    let tmp = cells[row * boardWidth + k];
-    cells[row * boardWidth + k] = cells[row * boardWidth + index];
-    cells[row * boardWidth + index] = tmp;
+    [cells[row * boardWidth + k].value, cells[row * boardWidth + index].value] = [cells[row * boardWidth + index].value, cells[row * boardWidth + k].value];
+    [cells[row * boardWidth + k].id, cells[row * boardWidth + index].id] = [cells[row * boardWidth + index].id, cells[row * boardWidth + k].id];
 }
+
 
 function reRender() {
     board.textContent = "";
@@ -257,26 +258,83 @@ function flowToLeft() {
         let row = i;
         let count = 0;
         for (let j = 1; j < boardWidth - 1; j++) {
-            if (cells[i * boardWidth + j] === 0) {
+            if (cells[i * boardWidth + j].value === 0) {
                 count++;
             }
         }
         if (count !== 0 && count !== boardWidth - 2) {
             // Tiếp tục thực hiện vòng lặp cho đến khi không thể di chuyển sang trái nữa
-            while (isPossibleToMoveLeft(row)) {
+            while (!isPossibleToMoveLeft(row)) {
                 // Duyệt qua từng phần tử của hàng
                 for (let k = 1; k < boardWidth - 1; k++) {
                     // Nếu phần tử bằng 0
                     if (cells[row * boardWidth + k].value === 0) {
-                        // Kiểm tra xem có phần tử nào bằng 0 ở bên trái không
                         let index = check0CellInRowLeft(k, row);
-                        // Nếu có, hoán đổi vị trí của phần tử đó với phần tử bằng 0
                         if (index !== 1) {
                             swapCellX(k, index, row)
-                            break
+                            break;
                         }
                     }
                 }
+            }
+        }
+    }
+    drawCells();
+}
+
+function isPossibleToMoveTop(col) {
+    let index = 0;
+    for (let i = 1; i < boardHeight - 1; i++) {
+        if (cells[i * boardWidth + col].value === 0) {
+            index = i;
+            break;
+        }
+    }
+    for (let i = 1; i < boardHeight; i++) {
+        if (cells[i * boardWidth + col].value !== 0 && i > index) {
+            return false;
+        }
+    }
+    return true;
+}
+
+function check0CellInColumnTop(start, col) {
+    for (let i = start; i < boardHeight - 1; i++) {
+        if (cells[i * boardWidth + col].value !== 0) {
+            return i;
+        }
+    }
+    return -1;
+}
+
+function swapCellY(k, index, col) {
+    [cells[k * boardWidth + col].value, cells[index * boardWidth + col].value] = [cells[index * boardWidth + col].value, cells[k * boardWidth + col].value];
+    [cells[k * boardWidth + col].id, cells[index * boardWidth + col].id] = [cells[index * boardWidth + col].id, cells[k * boardWidth + col].id];
+
+}
+
+
+function flowToTop() {
+    for (let i = 1; i < boardWidth - 1; i++) {
+        let col = i;
+        let count = 0;
+        for (let j = 0; j < boardHeight - 1; j++) {
+            if (cells[j * boardWidth + i].value === 0) {
+                count++;
+            }
+        }
+        if (count !== 0 && count !== boardHeight - 2) {
+            while (!isPossibleToMoveTop(col)) {
+                for (let k = 1; k < boardHeight - 1; k++) {
+                    if (cells[k * boardWidth + col].value === 0) {
+                        let index = check0CellInColumnTop(k, col);
+                        if (index !== 1) {
+                            swapCellY(k, index, col);
+                            break;
+                        }
+                    }
+                }
+
             }
         }
     }
@@ -766,6 +824,7 @@ function mainAlgorithim() {
         isHandle = [];
         isSelecting = 0;
     }
+    flowToLeft();
 }
 
 
@@ -814,8 +873,9 @@ function handleSwap() {
 
 function game() {
     mainAlgorithim();
-    flowToLeft();
+    // flowToLeft();
     // drawCells();
+    flowToTop();
     showScore();
     WinGame();
     if (isOkieToShuffle()) {
