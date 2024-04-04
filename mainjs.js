@@ -6,7 +6,7 @@ let cellSize = 45; //Kích thước của mỗi ô theo pixel
 let cellNum = colCell * rowCell; //Tổng số ô (tính toán từ colCell và rowCell)
 let typeNum = 20; // Số lượng kiểu biểu tượng (hình ảnh) khác nhau trong trò chơi
 let numEachType = 6; // Số lượng của mỗi kiểu biểu tượng được tạo ra
-const gameTime = 10; // Giới hạn thời gian cho trò chơi trong giây
+const gameTime = 300; // Giới hạn thời gian cho trò chơi trong giây
 let info = document.getElementById("info");
 let board = document.getElementById("game-board"); //Tham chiếu đến phần tử HTML có ID "game-board"
 let myCanvas = ""; //  Tham chiếu đến phần tử canvas được tạo để vẽ trò chơi
@@ -32,7 +32,7 @@ function getRndInteger(min, max) {
 }
 
 function drawLineFromXtoY(x1, y1, x2, y2, ctx) {
-    ctx.lineWidth = 5;
+    ctx.lineWidth = 1;
     ctx.strokeStyle = "red";
     ctx.beginPath();
     ctx.moveTo(x1, y1);
@@ -54,8 +54,8 @@ function createRandomValueForCell() {
 function cell(id, value, x, y) {
     this.id = id;
     this.value = value;
-    this.x = x;
-    this.y = y;
+    this.x = x; // Chỉ số của cột
+    this.y = y; // Chỉ số của dòng
     this.width = cellSize;
     this.height = cellSize;
     this.centerX = (this.x) + (this.width) / 2;
@@ -103,7 +103,7 @@ function swapCell() {
             cell[index].value = t;
         }
     }
-    game();
+    // game();
 }
 
 // Hàm handleClick để xử lý sự kiện click
@@ -143,7 +143,7 @@ function addEventForCell() {
 
 // Hàm init để khởi tạo lại trò chơi
 function init() {
-    info.style.display = "block";
+    info.style.display = 'block';
     board.style.display = 'grid';
     // Đặt lại điểm số trò chơi, trạng thái đang chọn và thời gian còn lại
     gameScore = 0;
@@ -214,6 +214,75 @@ function drawCells() {
         myCanvas.style.zIndex = -1;
     }, 300);
 }
+
+function isPossibleToMoveLeft(row) {
+    let index = 0;
+    for (let i = 1; i < boardWidth - 1; i++) {
+        if (cells[i + row * boardWidth].value === 0) {
+            index = i;
+            break;
+        }
+    }
+    for (let i = 1; i < boardWidth - 1; i++) {
+        if (cells[i + row * boardWidth].value !== 0 && i > index) {
+            return true;
+        }
+    }
+    return false;
+}
+
+function check0CellInRowLeft(start, row) {
+    for (let i = start; i < boardWidth - 1; i++) {
+        if (cells[row * boardWidth + i].value !== 0) {
+            return i;
+        }
+    }
+    return -1;
+}
+
+function swapCellX(k, index, row) {
+    let tmp = cells[row * boardWidth + k];
+    cells[row * boardWidth + k] = cells[row * boardWidth + index];
+    cells[row * boardWidth + index] = tmp;
+}
+
+function reRender() {
+    board.textContent = "";
+    drawCells();
+
+}
+
+function flowToLeft() {
+    for (let i = 1; i < boardHeight - 1; i++) {
+        let row = i;
+        let count = 0;
+        for (let j = 1; j < boardWidth - 1; j++) {
+            if (cells[i * boardWidth + j] === 0) {
+                count++;
+            }
+        }
+        if (count !== 0 && count !== boardWidth - 2) {
+            // Tiếp tục thực hiện vòng lặp cho đến khi không thể di chuyển sang trái nữa
+            while (isPossibleToMoveLeft(row)) {
+                // Duyệt qua từng phần tử của hàng
+                for (let k = 1; k < boardWidth - 1; k++) {
+                    // Nếu phần tử bằng 0
+                    if (cells[row * boardWidth + k].value === 0) {
+                        // Kiểm tra xem có phần tử nào bằng 0 ở bên trái không
+                        let index = check0CellInRowLeft(k, row);
+                        // Nếu có, hoán đổi vị trí của phần tử đó với phần tử bằng 0
+                        if (index !== 1) {
+                            swapCellX(k, index, row)
+                            break
+                        }
+                    }
+                }
+            }
+        }
+    }
+    drawCells();
+}
+
 
 function showScore() {
     document.getElementById("score").innerHTML = "Score: " + gameScore;
@@ -301,7 +370,7 @@ function checkOneVerticalLine(id1, id2, drawable) {
         // Duyệt qua các ô từ y1 đến y2
         for (let i = y1 + 1; i < y2; i++) {
             // Nếu ô nào có giá trị khác 0 thì trả về false
-            if (cells[x1 + i * boardWidth].value != 0) {
+            if (cells[x1 + i * boardWidth].value !== 0) {
                 return false;
             }
         }
@@ -333,7 +402,7 @@ function checkX(id1, id2) {
     let y2 = Math.floor(id2 / boardWidth);
 
     // Kiểm tra nếu id1 bằng id2 thì trả về true
-    if (id1 == id2) {
+    if (id1 === id2) {
         return true;
     }
     // Đổi vị trí tọa độ, nếu x1 lớn hơn x2
@@ -343,16 +412,16 @@ function checkX(id1, id2) {
         x2 = t;
     }
     // Kiểm tra nếu 2 ô cùng hàng
-    if (y1 == y2) {
+    if (y1 === y2) {
         // Duyệt qua các ô từ x1 đến x2
         for (let i = x1 + 1; i < x2; i++) {
             // Nếu ô nào có giá trị khác 0 thì trả về false
-            if (cells[i + y1 * boardWidth].value != 0) {
+            if (cells[i + y1 * boardWidth].value !== 0) {
                 return false;
             }
         }
         // Nếu giá trị của ô id1 hoặc ô id2 bằng 0 thì trả về true
-        if (cells[id1].value * cells[id2].value == 0) {
+        if (cells[id1].value * cells[id2].value === 0) {
             return true;
         }
     }
@@ -369,11 +438,11 @@ function checkY(id1, id2) {
     let y2 = Math.floor(id2 / boardWidth);
 
     // Kiểm tra nếu id1 bằng id2 thì trả về true
-    if (id1 == id2) {
+    if (id1 === id2) {
         return true;
     }
     // Kiểm tra nếu 2 ô cùng cột
-    if (x1 == x2) {
+    if (x1 === x2) {
         // Đổi vị trí tọa độ, nếu y1 lớn hơn y2
         if (y1 > y2) {
             let t = y2;
@@ -384,12 +453,12 @@ function checkY(id1, id2) {
         // Duyệt qua các ô từ y1 đến y2
         for (let i = y1 + 1; i < y2; i++) {
             // Nếu ô nào có giá trị khác 0 thì trả về false
-            if (cells[returnID(x1, i)].value != 0) {
+            if (cells[returnID(x1, i)].value !== 0) {
                 return false;
             }
         }
         // Nếu giá trị của ô id1 hoặc ô id2 bằng 0 thì trả về true
-        if (cells[id1].value * cells[id2].value == 0) {
+        if (cells[id1].value * cells[id2].value === 0) {
             return true;
         }
     }
@@ -422,86 +491,64 @@ function checkInRect(id1, id2, drawable) {
         //Kiểm tra
         for (let i = leftY - 1; i >= rightY; i--) {
             //Kiểm tra có đường đi giữa 2 ô cùng 1 cột leftX và từ dòng leftY đến dòng i
-            if (checkY(returnID(leftX, leftY), returnID(leftX, i))) {
-                //Kiểm tra có đường đi giữa 2 ô cùng 1 hàng i và từ cột leftX đến cột rightX
-                if (checkX(returnID(leftX, i), returnID(rightX, i))) {
-                    //Kiểm tra có đường đi giữa 2 ô cùng 1 cột rightX và từ dòng i đến dòng rightY
-                    if (checkY(returnID(rightX, i), returnID(rightX, rightY))) {
-                        // Nếu drawable là true, vẽ đường nối giữa hai ô và sau 300ms xóa đường vừa vẽ
-                        if (drawable) {
-                            drawLineFromXtoY(cells[returnID(leftX, leftY)].centerX, cells[returnID(leftX, leftY)].centerY, cells[returnID(leftX, i)].centerX, cells[returnID(leftX, i)].centerY, ctx);
-                            drawLineFromXtoY(cells[returnID(leftX, i)].centerX, cells[returnID(leftX, i)].centerY, cells[returnID(rightX, i)].centerX, cells[returnID(rightX, i)].centerY, ctx);
-                            drawLineFromXtoY(cells[returnID(rightX, i)].centerX, cells[returnID(rightX, i)].centerY, cells[returnID(rightX, rightY)].centerX, cells[returnID(rightX, rightY)].centerY, ctx);
-                            setTimeout(() => {
-                                ctx.clearRect(0, 0, 630, 540);
-                            }, 300);
-                        }
-                        return true;
-                    }
+            if (checkY(returnID(leftX, leftY), returnID(leftX, i)) && checkX(returnID(leftX, i), returnID(rightX, i)) && checkY(returnID(rightX, i), returnID(rightX, rightY))) {
+                // Nếu drawable là true, vẽ đường nối giữa hai ô và sau 300ms xóa đường vừa vẽ
+                if (drawable) {
+                    drawLineFromXtoY(cells[returnID(leftX, leftY)].centerX, cells[returnID(leftX, leftY)].centerY, cells[returnID(leftX, i)].centerX, cells[returnID(leftX, i)].centerY, ctx);
+                    drawLineFromXtoY(cells[returnID(leftX, i)].centerX, cells[returnID(leftX, i)].centerY, cells[returnID(rightX, i)].centerX, cells[returnID(rightX, i)].centerY, ctx);
+                    drawLineFromXtoY(cells[returnID(rightX, i)].centerX, cells[returnID(rightX, i)].centerY, cells[returnID(rightX, rightY)].centerX, cells[returnID(rightX, rightY)].centerY, ctx);
+                    setTimeout(() => {
+                        ctx.clearRect(0, 0, 630, 540);
+                    }, 300);
                 }
+                return true;
             }
         }
     }
     //left nằm trên right
     else {
         for (let i = leftY + 1; i <= rightY; i++) {
-            if (checkY(returnID(leftX, leftY), returnID(leftX, i))) {
-                if (checkX(returnID(leftX, i), returnID(rightX, i))) {
-                    if (checkY(returnID(rightX, i), returnID(rightX, rightY))) {
-                        if (drawable) {
-                            drawLineFromXtoY(cells[returnID(leftX, leftY)].centerX, cells[returnID(leftX, leftY)].centerY, cells[returnID(leftX, i)].centerX, cells[returnID(leftX, i)].centerY, ctx);
-                            drawLineFromXtoY(cells[returnID(leftX, i)].centerX, cells[returnID(leftX, i)].centerY, cells[returnID(rightX, i)].centerX, cells[returnID(rightX, i)].centerY, ctx);
-                            drawLineFromXtoY(cells[returnID(rightX, i)].centerX, cells[returnID(rightX, i)].centerY, cells[returnID(rightX, rightY)].centerX, cells[returnID(rightX, rightY)].centerY, ctx);
-                            setTimeout(() => {
-                                ctx.clearRect(0, 0, 630, 540);
-                            }, 300);
-                        }
-                        return true;
-                    }
-
+            if (checkY(returnID(leftX, leftY), returnID(leftX, i)) && checkX(returnID(leftX, i), returnID(rightX, i)) && checkY(returnID(rightX, i), returnID(rightX, rightY))) {
+                if (drawable) {
+                    drawLineFromXtoY(cells[returnID(leftX, leftY)].centerX, cells[returnID(leftX, leftY)].centerY, cells[returnID(leftX, i)].centerX, cells[returnID(leftX, i)].centerY, ctx);
+                    drawLineFromXtoY(cells[returnID(leftX, i)].centerX, cells[returnID(leftX, i)].centerY, cells[returnID(rightX, i)].centerX, cells[returnID(rightX, i)].centerY, ctx);
+                    drawLineFromXtoY(cells[returnID(rightX, i)].centerX, cells[returnID(rightX, i)].centerY, cells[returnID(rightX, rightY)].centerX, cells[returnID(rightX, rightY)].centerY, ctx);
+                    setTimeout(() => {
+                        ctx.clearRect(0, 0, 630, 540);
+                    }, 300);
                 }
+                return true;
             }
         }
     }
     // Kiểm tra từ leftX đến rightX
     for (let i = leftX + 1; i <= rightX; i++) {
         // Kiểm tra có đường đi giữa 2 ô cùng 1 hàng leftY và từ cột leftX đến cột i
-        if (checkX(returnID(leftX, leftY), returnID(i, leftY))) {
-            // Kiểm tra có đường đi giữa 2 ô cùng 1 cột i và từ dòng leftY đến dòng rightY
-            if (checkY(returnID(i, leftY), returnID(i, rightY))) {
-                // Kiểm tra có đường đi giữa 2 ô cùng 1 hàng rightY và từ cột i đến cột rightX
-                if (checkX(returnID(i, rightY), returnID(rightX, rightY))) {
-                    // Nếu drawable là true, vẽ đường nối giữa hai ô và sau 300ms xóa đường vừa vẽ
-                    if (drawable) {
-                        drawLineFromXtoY(cells[returnID(leftX, leftY)].centerX, cells[returnID(leftX, leftY)].centerY, cells[returnID(i, leftY)].centerX, cells[returnID(i, leftY)].centerY, ctx);
-                        drawLineFromXtoY(cells[returnID(i, leftY)].centerX, cells[returnID(i, leftY)].centerY, cells[returnID(i, rightY)].centerX, cells[returnID(i, rightY)].centerY, ctx);
-                        drawLineFromXtoY(cells[returnID(i, rightY)].centerX, cells[returnID(i, rightY)].centerY, cells[returnID(rightX, rightY)].centerX, cells[returnID(rightX, rightY)].centerY, ctx);
-                        setTimeout(() => {
-                            ctx.clearRect(0, 0, 630, 540);
-                        }, 300);
-                    }
-                    return true;
-                }
-
+        if (checkX(returnID(leftX, leftY), returnID(i, leftY)) && checkY(returnID(i, leftY), returnID(i, rightY)) && checkX(returnID(i, rightY), returnID(rightX, rightY))) {
+            // Nếu drawable là true, vẽ đường nối giữa hai ô và sau 300ms xóa đường vừa vẽ
+            if (drawable) {
+                drawLineFromXtoY(cells[returnID(leftX, leftY)].centerX, cells[returnID(leftX, leftY)].centerY, cells[returnID(i, leftY)].centerX, cells[returnID(i, leftY)].centerY, ctx);
+                drawLineFromXtoY(cells[returnID(i, leftY)].centerX, cells[returnID(i, leftY)].centerY, cells[returnID(i, rightY)].centerX, cells[returnID(i, rightY)].centerY, ctx);
+                drawLineFromXtoY(cells[returnID(i, rightY)].centerX, cells[returnID(i, rightY)].centerY, cells[returnID(rightX, rightY)].centerX, cells[returnID(rightX, rightY)].centerY, ctx);
+                setTimeout(() => {
+                    ctx.clearRect(0, 0, 630, 540);
+                }, 300);
             }
+            return true;
         }
     }
 // Kiểm tra từ leftX đến rightX theo hướng ngược lại
     for (let i = leftX - 1; i >= rightX; i--) {
-        if (checkX(returnID(leftX, leftY), returnID(i, leftY))) {
-            if (checkY(returnID(i, leftY), returnID(i, rightY))) {
-                if (checkX(returnID(i, rightY), returnID(rightX, rightY))) {
-                    if (drawable) {
-                        drawLineFromXtoY(cells[returnID(leftX, leftY)].centerX, cells[returnID(leftX, leftY)].centerY, cells[returnID(i, leftY)].centerX, cells[returnID(i, leftY)].centerY, ctx);
-                        drawLineFromXtoY(cells[returnID(i, leftY)].centerX, cells[returnID(i, leftY)].centerY, cells[returnID(i, rightY)].centerX, cells[returnID(i, rightY)].centerY, ctx);
-                        drawLineFromXtoY(cells[returnID(i, rightY)].centerX, cells[returnID(i, rightY)].centerY, cells[returnID(rightX, rightY)].centerX, cells[returnID(rightX, rightY)].centerY, ctx);
-                        setTimeout(() => {
-                            ctx.clearRect(0, 0, 630, 540);
-                        }, 300);
-                    }
-                    return true;
-                }
+        if (checkX(returnID(leftX, leftY), returnID(i, leftY)) && checkY(returnID(i, leftY), returnID(i, rightY)) && checkX(returnID(i, rightY), returnID(rightX, rightY))) {
+            if (drawable) {
+                drawLineFromXtoY(cells[returnID(leftX, leftY)].centerX, cells[returnID(leftX, leftY)].centerY, cells[returnID(i, leftY)].centerX, cells[returnID(i, leftY)].centerY, ctx);
+                drawLineFromXtoY(cells[returnID(i, leftY)].centerX, cells[returnID(i, leftY)].centerY, cells[returnID(i, rightY)].centerX, cells[returnID(i, rightY)].centerY, ctx);
+                drawLineFromXtoY(cells[returnID(i, rightY)].centerX, cells[returnID(i, rightY)].centerY, cells[returnID(rightX, rightY)].centerX, cells[returnID(rightX, rightY)].centerY, ctx);
+                setTimeout(() => {
+                    ctx.clearRect(0, 0, 630, 540);
+                }, 300);
             }
+            return true;
         }
     }
     return false;
@@ -533,7 +580,7 @@ function checkOutRect(id1, id2, drawable) {
 
         // Kiểm tra các ô trên cùng một hàng ngang
         let i = leftY - 1;
-        while (i >= 0 && cells[returnID(leftX, i)].value == 0) {
+        while (i >= 0 && cells[returnID(leftX, i)].value === 0) {
             // Kiểm tra xem có thể vẽ hình chữ nhật từ ô trên cùng bên trái đến ô dưới cùng bên phải
             if (checkY(returnID(leftX, leftY), returnID(leftX, i)) &&
                 checkX(returnID(leftX, i), returnID(rightX, i)) &&
@@ -554,7 +601,7 @@ function checkOutRect(id1, id2, drawable) {
         }
         // Tiếp tục kiểm tra các ô trên cùng một hàng ngang phía dưới
         i = leftY + 1;
-        while (i < boardHeight && cells[returnID(leftX, i)].value == 0) {
+        while (i < boardHeight && cells[returnID(leftX, i)].value === 0) {
             // Kiểm tra xem có thể vẽ hình chữ nhật từ ô dưới cùng bên trái đến ô trên cùng bên phải
             if (checkY(returnID(leftX, leftY), returnID(leftX, i)) &&
                 checkX(returnID(leftX, i), returnID(rightX, i)) &&
@@ -590,42 +637,55 @@ function checkOutRect(id1, id2, drawable) {
 
         //Xử lý <
         let i = topX - 1;
-        while (i >= 0 && cells[returnID(i, topY)].value == 0) {
-            if (checkX(returnID(topX, topY), returnID(i, topY))) {
-                if (checkY(returnID(i, topY), returnID(i, bottomY))) {
-                    if (checkX(returnID(i, bottomY), returnID(bottomX, bottomY))) {
-                        if (drawable) {
-                            drawLineFromXtoY(cells[returnID(topX, topY)].centerX, cells[returnID(topX, topY)].centerY, cells[returnID(i, topY)].centerX, cells[returnID(i, topY)].centerY);
-                            drawLineFromXtoY(cells[returnID(i, topY)].centerX, cells[returnID(i, topY)].centerY, cells[returnID(i, bottomY)].centerX, cells[returnID(i, bottomY)].centerY);
-                            drawLineFromXtoY(cells[returnID(i, bottomY)].centerX, cells[returnID(i, bottomY)].centerY, cells[returnID(bottomX, bottomY)].centerX, cells[returnID(bottomX, bottomY)].centerY);
-                            setTimeout(() => {
-                                ctx.clearRect(0, 0, 630, 540);
-                            }, 300);
-                        }
-                        return true;
-                    }
+        while (i >= 0 && cells[returnID(i, topY)].value === 0) {
+            if (checkX(returnID(topX, topY), returnID(i, topY))
+                && checkY(returnID(i, topY), returnID(i, bottomY))
+                && checkX(returnID(i, bottomY), returnID(bottomX, bottomY))) {
+                if (drawable) {
+                    drawLineFromXtoY(cells[returnID(topX, topY)].centerX,
+                        cells[returnID(topX, topY)].centerY,
+                        cells[returnID(i, topY)].centerX,
+                        cells[returnID(i, topY)].centerY, ctx);
+                    drawLineFromXtoY(cells[returnID(i, topY)].centerX,
+                        cells[returnID(i, topY)].centerY,
+                        cells[returnID(i, bottomY)].centerX,
+                        cells[returnID(i, bottomY)].centerY, ctx);
+                    drawLineFromXtoY(cells[returnID(i, bottomY)].centerX,
+                        cells[returnID(i, bottomY)].centerY,
+                        cells[returnID(bottomX, bottomY)].centerX,
+                        cells[returnID(bottomX, bottomY)].centerY, ctx);
+                    setTimeout(() => {
+                        ctx.clearRect(0, 0, 630, 540);
+                    }, 300);
                 }
+                return true;
             }
             i--;
         }
         //Xử lý >
         i = topX + 1;
-        while (i < boardWidth && cells[returnID(i, topY)].value == 0) {
-            if (checkX(returnID(topX, topY), returnID(i, topY))) {
-                if (checkY(returnID(i, topY), returnID(i, bottomY))) {
-                    if (checkX(returnID(i, bottomY), returnID(bottomX, bottomY))) {
-                        if (drawable) {
-                            drawLineFromXtoY(cells[returnID(topX, topY)].centerX, cells[returnID(topX, topY)].centerY, cells[returnID(i, topY)].centerX, cells[returnID(i, topY)].centerY, ctx);
-                            drawLineFromXtoY(cells[returnID(i, topY)].centerX, cells[returnID(i, topY)].centerY, cells[returnID(i, bottomY)].centerX, cells[returnID(i, bottomY)].centerY, ctx);
-                            drawLineFromXtoY(cells[returnID(i, bottomY)].centerX, cells[returnID(i, bottomY)].centerY, cells[returnID(bottomX, bottomY)].centerX, cells[returnID(bottomX, bottomY)].centerY, ctx);
-                            setTimeout(() => {
-                                ctx.clearRect(0, 0, 630, 540);
-                            }, 300);
-                        }
-                        return true;
-                    }
-
+        while (i < boardWidth && cells[returnID(i, topY)].value === 0) {
+            if (checkX(returnID(topX, topY), returnID(i, topY))
+                && checkY(returnID(i, topY), returnID(i, bottomY))
+                && checkX(returnID(i, bottomY), returnID(bottomX, bottomY))) {
+                if (drawable) {
+                    drawLineFromXtoY(cells[returnID(topX, topY)].centerX,
+                        cells[returnID(topX, topY)].centerY,
+                        cells[returnID(i, topY)].centerX,
+                        cells[returnID(i, topY)].centerY, ctx);
+                    drawLineFromXtoY(cells[returnID(i, topY)].centerX,
+                        cells[returnID(i, topY)].centerY,
+                        cells[returnID(i, bottomY)].centerX,
+                        cells[returnID(i, bottomY)].centerY, ctx);
+                    drawLineFromXtoY(cells[returnID(i, bottomY)].centerX,
+                        cells[returnID(i, bottomY)].centerY,
+                        cells[returnID(bottomX, bottomY)].centerX,
+                        cells[returnID(bottomX, bottomY)].centerY, ctx);
+                    setTimeout(() => {
+                        ctx.clearRect(0, 0, 630, 540);
+                    }, 300);
                 }
+                return true;
             }
             i++;
         }
@@ -633,42 +693,42 @@ function checkOutRect(id1, id2, drawable) {
     return false;
 }
 
+
 // Hàm checkOKIE để kiểm tra xem có đường đi từ ô id1 đến ô id2 không và vẽ đường đi nếu có
 function checkOKIE(id1, id2, drawable) {
-    //Kiểm tra giá trị của id1 với id2 có trùng nhau không
     if (!checkSelfChosen(id1, id2)) {
         return false;
     }
 
-    // Kiểm tra nếu giá trị của ô id1 và ô id2 không giống nhau thì trả về false
     if (!checkValue(id1, id2))
         return false;
 
-    // Kiểm tra nếu có đường đi theo chiều ngang từ ô id1 đến ô id2 thì trả về true
     if (checkOneHorizontalLine(id1, id2, drawable)) {
+
         return true;
     }
 
-    // Kiểm tra nếu có đường đi theo chiều dọc từ ô id1 đến ô id2 thì trả về true
+
     if (checkOneVerticalLine(id1, id2, drawable)) {
+
         return true;
     }
-    // Kiểm tra nếu có đường đi theo hình chữ nhật từ ô id1 đến ô id2 thì trả về true
     if (checkInRect(id1, id2, drawable)) {
+
         return true;
     }
-    // Kiểm tra nếu có đường đi theo hình chữ nhật từ ô id1 đến ô id2 nhưng theo hướng ngược lại thì trả về true
     if (checkOutRect(id1, id2, drawable)) {
+
         return true;
     }
 
-    // Trả về false nếu không có đường đi từ ô id1 đến ô id2
+
     return false;
 }
 
 
 function WinGame() {
-    if (gameScore == 6000) {
+    if (gameScore === 6000) {
         document.getElementById("win-game").style.display = "block";
         isWin = true;
     }
@@ -679,7 +739,7 @@ function mainAlgorithim() {
     // Khởi tạo mảng isHandle để lưu các ô được chọn
     let isHandle = [];
     // Kiểm tra nếu người chơi đã chọn 2 ô
-    if (isSelecting == 2) {
+    if (isSelecting === 2) {
         // Duyệt qua từng ô trong mảng cells
         for (let id = boardWidth; id < boardWidth * boardHeight - boardWidth; id++) {
             // Kiểm tra nếu ô được chọn thì thêm vào mảng isHandle
@@ -718,11 +778,11 @@ function isOkieToShuffle() {
     // Duyệt qua từng ô trong mảng cells
     for (let i = 0; i < cells.length - 1; i++) {
         // Kiểm tra nếu giá trị của ô khác 0
-        if (cells[i].value != 0) {
+        if (cells[i].value !== 0) {
             // Duyệt qua các ô còn lại trong mảng cells
             for (let j = i + 1; j < cells.length; j++) {
                 // Kiểm tra nếu giá trị của ô khác 0
-                if (cells[j].value != 0) {
+                if (cells[j].value !== 0) {
                     // Kiểm tra nếu có đường đi từ ô i đến ô j thì không thể xáo trộn, trả về false
                     if (checkOKIE(i, j, false))
                         return false;
@@ -754,7 +814,8 @@ function handleSwap() {
 
 function game() {
     mainAlgorithim();
-    drawCells();
+    flowToLeft();
+    // drawCells();
     showScore();
     WinGame();
     if (isOkieToShuffle()) {
