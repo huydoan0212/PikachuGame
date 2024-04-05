@@ -103,7 +103,7 @@ function swapCell() {
             cell[index].value = t;
         }
     }
-    // game();
+    game();
 }
 
 // Hàm handleClick để xử lý sự kiện click
@@ -232,9 +232,34 @@ function isPossibleToMoveLeft(row) {
     return true;
 }
 
+function isPossibleToMoveTop(col) {
+    let index = 0;
+    for (let i = 1; i < boardHeight - 1; i++) {
+        if (cells[i * boardWidth + col].value === 0) {
+            index = i;
+            break;
+        }
+    }
+    for (let i = 1; i < boardHeight; i++) {
+        if (cells[i * boardWidth + col].value !== 0 && i > index) {
+            return false;
+        }
+    }
+    return true;
+}
+
 function check0CellInRowLeft(start, row) {
     for (let i = start; i < boardWidth - 1; i++) {
         if (cells[row * boardWidth + i].value !== 0) {
+            return i;
+        }
+    }
+    return -1;
+}
+
+function check0CellInColumnTop(start, col) {
+    for (let i = start; i < boardHeight - 1; i++) {
+        if (cells[i * boardWidth + col].value !== 0) {
             return i;
         }
     }
@@ -246,11 +271,9 @@ function swapCellX(k, index, row) {
     [cells[row * boardWidth + k].id, cells[row * boardWidth + index].id] = [cells[row * boardWidth + index].id, cells[row * boardWidth + k].id];
 }
 
-
-function reRender() {
-    board.textContent = "";
-    drawCells();
-
+function swapCellY(k, index, col) {
+    [cells[k * boardWidth + col].value, cells[index * boardWidth + col].value] = [cells[index * boardWidth + col].value, cells[k * boardWidth + col].value];
+    [cells[k * boardWidth + col].id, cells[index * boardWidth + col].id] = [cells[index * boardWidth + col].id, cells[k * boardWidth + col].id];
 }
 
 function flowToLeft() {
@@ -270,7 +293,7 @@ function flowToLeft() {
                     // Nếu phần tử bằng 0
                     if (cells[row * boardWidth + k].value === 0) {
                         let index = check0CellInRowLeft(k, row);
-                        if (index !== 1) {
+                        if (index !== -1) {
                             swapCellX(k, index, row)
                             break;
                         }
@@ -282,43 +305,11 @@ function flowToLeft() {
     drawCells();
 }
 
-function isPossibleToMoveTop(col) {
-    let index = 0;
-    for (let i = 1; i < boardHeight - 1; i++) {
-        if (cells[i * boardWidth + col].value === 0) {
-            index = i;
-            break;
-        }
-    }
-    for (let i = 1; i < boardHeight; i++) {
-        if (cells[i * boardWidth + col].value !== 0 && i > index) {
-            return false;
-        }
-    }
-    return true;
-}
-
-function check0CellInColumnTop(start, col) {
-    for (let i = start; i < boardHeight - 1; i++) {
-        if (cells[i * boardWidth + col].value !== 0) {
-            return i;
-        }
-    }
-    return -1;
-}
-
-function swapCellY(k, index, col) {
-    [cells[k * boardWidth + col].value, cells[index * boardWidth + col].value] = [cells[index * boardWidth + col].value, cells[k * boardWidth + col].value];
-    [cells[k * boardWidth + col].id, cells[index * boardWidth + col].id] = [cells[index * boardWidth + col].id, cells[k * boardWidth + col].id];
-
-}
-
-
 function flowToTop() {
     for (let i = 1; i < boardWidth - 1; i++) {
         let col = i;
         let count = 0;
-        for (let j = 0; j < boardHeight - 1; j++) {
+        for (let j = 1; j < boardHeight - 1; j++) {
             if (cells[j * boardWidth + i].value === 0) {
                 count++;
             }
@@ -328,19 +319,119 @@ function flowToTop() {
                 for (let k = 1; k < boardHeight - 1; k++) {
                     if (cells[k * boardWidth + col].value === 0) {
                         let index = check0CellInColumnTop(k, col);
-                        if (index !== 1) {
+                        if (index !== -1) {
                             swapCellY(k, index, col);
                             break;
                         }
                     }
                 }
-
             }
         }
     }
     drawCells();
 }
 
+function isPossibleToMoveRightHaftToLeft(row) {
+    let index = 0;
+    for (let i = 6; i > 0; i--) {
+        if (cells[row * boardWidth + i].value === 0) {
+            index = i;
+            break
+        }
+    }
+    for (let i = 6; i > 0; i--) {
+        if (cells[row * boardWidth + i].value !== 0 && i < index) {
+            return false
+        }
+    }
+    return true
+}
+
+function check0CellInRowMoveRightHaftToLeft(start, row) {
+    for (let i = start; i > 0; i--) {
+        if (cells[row * boardWidth + i].value !== 0) {
+            return i
+        }
+    }
+    return -1;
+}
+
+function moveRightHaftToLeft() {
+    for (let i = 1; i < boardHeight - 1; i++) {
+        let row = i;
+        let count = 0;
+        for (let j = 1; j < 7; j++) {
+            if (cells[row * boardWidth + j].value === 0) {
+                count++;
+            }
+        }
+        if (count !== 0 && count !== 6) {
+            while (!isPossibleToMoveRightHaftToLeft(row)) {
+                for (let k = 6; k > 0; k--) {
+                    if (cells[row * boardWidth + k].value === 0) {
+                        let index = check0CellInRowMoveRightHaftToLeft(k, row);
+                        if (index !== -1) {
+                            swapCellX(k, index, row)
+                            break;
+                        }
+                    }
+                }
+            }
+        }
+    }
+    drawCells();
+}
+
+function check0CellInRowMoveLeftHaftToRight(start, row) {
+    for (let i = start; i < boardWidth - 1; i++) {
+        if (cells[row * boardWidth + i].value !== 0) {
+            return i
+        }
+    }
+    return -1;
+}
+
+function isPossibleToMoveLeftHaftToRight(row) {
+    let index = 0
+    for (let i = 7; i < boardWidth - 1; i++) {
+        if (cells[row * boardWidth + i].value === 0) {
+            index = i;
+            break
+        }
+    }
+    for (let i = 7; i < boardWidth - 1; i++) {
+        if (cells[row * boardWidth + i].value !== 0 && i > index) {
+            return false
+        }
+    }
+    return true
+}
+
+function moveLeftHaftToRight() {
+    for (let i = 1; i < boardHeight - 1; i++) {
+        let row = i;
+        let count = 0;
+        for (let j = 7; j < boardWidth - 1; j++) {
+            if (cells[i * boardWidth + j].value === 0) {
+                count++;
+            }
+        }
+        if (count !== 0 && count !== 6) {
+            while (!isPossibleToMoveLeftHaftToRight(row)) {
+                for (let k = 7; k < boardWidth - 1; k++) {
+                    if (cells[row * boardWidth + k].value === 0) {
+                        let index = check0CellInRowMoveLeftHaftToRight(k, row);
+                        if (index !== -1) {
+                            swapCellX(k, index, row)
+                            break;
+                        }
+                    }
+                }
+            }
+        }
+    }
+    drawCells();
+}
 
 function showScore() {
     document.getElementById("score").innerHTML = "Score: " + gameScore;
@@ -824,7 +915,10 @@ function mainAlgorithim() {
         isHandle = [];
         isSelecting = 0;
     }
-    flowToLeft();
+    // flowToTop();
+    // flowToLeft();
+    moveLeftHaftToRight();
+    moveRightHaftToLeft()
 }
 
 
@@ -873,16 +967,13 @@ function handleSwap() {
 
 function game() {
     mainAlgorithim();
-    // flowToLeft();
-    // drawCells();
-    flowToTop();
     showScore();
     WinGame();
     if (isOkieToShuffle()) {
         handleSwap();
     }
-}
 
+}
 
 // ctx.clearRect(0, 0, myCanvas.width, myCanvas.height);
 // game();
