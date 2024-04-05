@@ -433,6 +433,28 @@ function moveLeftHaftToRight() {
     drawCells();
 }
 
+function swapRowX() {
+    let row = []
+    for (let i = 1; i < boardWidth - 1; i++) {
+        row[i] = cells[boardWidth + i].value;
+    }
+    for (let i = 1; i < boardHeight - 1; i++) {
+        let j = i + 1;
+        if (j < boardHeight - 1) {
+            for (let k = 1; k < boardWidth - 1; k++) {
+                cells[i * boardWidth + k].value = cells[j * boardWidth + k].value;
+            }
+        }
+
+    }
+    for (let i = 1; i < boardWidth - 1; i++) {
+        cells[(boardHeight - 2) * boardWidth + i].value = row[i];
+
+    }
+    row.length = 0
+    drawCells();
+}
+
 function showScore() {
     document.getElementById("score").innerHTML = "Score: " + gameScore;
 }
@@ -906,6 +928,11 @@ function mainAlgorithim() {
             // Đặt zIndex của canvas thành 20
             myCanvas.style.zIndex = 20;
             // Thêm sự kiện cho các ô
+            // swapRowX();
+            flowToTop();
+            // flowToLeft();
+            // moveLeftHaftToRight();
+            // moveRightHaftToLeft()
             addEventForCell();
         }
         // Loại bỏ trạng thái đã chọn của 2 ô đã chọn
@@ -914,11 +941,9 @@ function mainAlgorithim() {
         // Đặt lại mảng isHandle và biến isSelecting
         isHandle = [];
         isSelecting = 0;
+
     }
-    // flowToTop();
-    // flowToLeft();
-    moveLeftHaftToRight();
-    moveRightHaftToLeft()
+
 }
 
 
@@ -968,6 +993,7 @@ function handleSwap() {
 function game() {
     mainAlgorithim();
     showScore();
+    drawCells()
     WinGame();
     if (isOkieToShuffle()) {
         handleSwap();
