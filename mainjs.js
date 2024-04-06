@@ -6,7 +6,7 @@ let cellSize = 45; //Kích thước của mỗi ô theo pixel
 let cellNum = colCell * rowCell; //Tổng số ô (tính toán từ colCell và rowCell)
 let typeNum = 20; // Số lượng kiểu biểu tượng (hình ảnh) khác nhau trong trò chơi
 let numEachType = 6; // Số lượng của mỗi kiểu biểu tượng được tạo ra
-const gameTime = 300; // Giới hạn thời gian cho trò chơi trong giây
+const gameTime = 5; // Giới hạn thời gian cho trò chơi trong giây
 let info = document.getElementById("info");
 let board = document.getElementById("game-board"); //Tham chiếu đến phần tử HTML có ID "game-board"
 let myCanvas = ""; //  Tham chiếu đến phần tử canvas được tạo để vẽ trò chơi
@@ -67,9 +67,11 @@ function cell(id, value, x, y) {
     this.draw = function () {
         if (this.value !== 0) {
             this.image.innerHTML = '<image src="image/pic' + this.value + '.png" alt="">';
+            this.image.style.border = "2px solid rgb(242, 142, 255)";
+            this.image.style.cursor = "pointer";
         } else {
             if (this.id > boardWidth && this.id <= boardWidth * boardHeight - boardWidth && this.id % boardWidth !== 0 && (this.id + 1) % boardWidth !== 0) {
-                this.image.style.border = "1px solid rgb(242, 142, 255)";
+                this.image.style.border = "2px solid rgb(242, 142, 255)";
             } else {
                 this.image.style.border = "none";
             }
@@ -466,7 +468,7 @@ function timeHandle() {
     // Cài đặt hàm setInterval để thực hiện hàm bên trong sau mỗi 1000ms (1 giây)
     setInterval(() => {
         // Nếu thời gian còn lại bằng 0 thì hiển thị thông báo game over
-        if (timeLeft == 0)
+        if (timeLeft === 0)
             document.getElementById("game-over").style.display = "block";
         // Cập nhật thời gian còn lại lên màn hình
         document.getElementById("time").innerHTML = "Time: " + timeLeft;
@@ -928,8 +930,8 @@ function mainAlgorithim() {
             // Đặt zIndex của canvas thành 20
             myCanvas.style.zIndex = 20;
             // Thêm sự kiện cho các ô
-            // swapRowX();
-            flowToTop();
+            swapRowX();
+            // flowToTop();
             // flowToLeft();
             // moveLeftHaftToRight();
             // moveRightHaftToLeft()
