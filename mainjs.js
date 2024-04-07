@@ -6,7 +6,7 @@ let cellSize = 45; //Kích thước của mỗi ô theo pixel
 let cellNum = colCell * rowCell; //Tổng số ô (tính toán từ colCell và rowCell)
 let typeNum = 20; // Số lượng kiểu biểu tượng (hình ảnh) khác nhau trong trò chơi
 let numEachType = 6; // Số lượng của mỗi kiểu biểu tượng được tạo ra
-const gameTime = 5; // Giới hạn thời gian cho trò chơi trong giây
+const gameTime = 3000; // Giới hạn thời gian cho trò chơi trong giây
 let info = document.getElementById("info");
 let board = document.getElementById("game-board"); //Tham chiếu đến phần tử HTML có ID "game-board"
 let myCanvas = ""; //  Tham chiếu đến phần tử canvas được tạo để vẽ trò chơi
@@ -17,13 +17,21 @@ let gameScore = 0; //Điểm hiện tại của người chơi
 let isSelecting = 0;//Cờ để chỉ ra người chơi hiện đang chọn ô hay không (0 - không chọn, 1 - chọn một ô, 2 - chọn hai ô)
 let timeLeft = 10;//Thời gian còn lại tính bằng giây
 let isWin = false;//Cờ để chỉ ra người chơi đã chiến thắng trò chơi hay chưa
-
+let selectElement = document.getElementById("choices");
+let selectedOption = null
+let level = 0;
 window.addEventListener("dblclick", (event) => {
     event.preventDefault();
 })
 
 for (let i = 0; i <= typeNum; i++) {
     checkTypeNum.push(0);
+}
+
+function nextLevel() {
+    level++;
+    init()
+
 }
 
 //Tạo ngẫu nhiên 1 số nằm giữa min và max
@@ -67,11 +75,11 @@ function cell(id, value, x, y) {
     this.draw = function () {
         if (this.value !== 0) {
             this.image.innerHTML = '<image src="image/pic' + this.value + '.png" alt="">';
-            this.image.style.border = "2px solid rgb(242, 142, 255)";
+            this.image.style.border = "2px solid rgb(50 205 50)";
             this.image.style.cursor = "pointer";
         } else {
             if (this.id > boardWidth && this.id <= boardWidth * boardHeight - boardWidth && this.id % boardWidth !== 0 && (this.id + 1) % boardWidth !== 0) {
-                this.image.style.border = "2px solid rgb(242, 142, 255)";
+                this.image.style.border = "2px solid rgb(50 205 50)";
             } else {
                 this.image.style.border = "none";
             }
@@ -100,9 +108,9 @@ function swapCell() {
             // Lưu giá trị tạm thời của ô hiện tại
             let t = cells[i].value;
             // Đặt giá trị của ô hiện tại bằng giá trị của ô tại vị trí ngẫu nhiên
-            cells[i].value = cell[index].value;
+            cells[i].value = cells[index].value;
             // Đặt giá trị của ô tại vị trí ngẫu nhiên bằng giá trị tạm thời
-            cell[index].value = t;
+            cells[index].value = t;
         }
     }
     game();
@@ -143,8 +151,33 @@ function addEventForCell() {
     }
 }
 
+
 // Hàm init để khởi tạo lại trò chơi
 function init() {
+    selectedOption = selectElement.options[selectElement.selectedIndex].value;
+    console.log(selectedOption)
+    switch (selectedOption) {
+        case "level1":
+            level = 1;
+            break
+        case "level2":
+            level = 2;
+            break
+        case "level3":
+            level = 3;
+            break
+        case "level4":
+            level = 4;
+            break
+        case "level5":
+            level = 5;
+            break
+        case "level6":
+            level = 6;
+            break
+
+    }
+    document.getElementById("text-level").textContent = level
     info.style.display = 'block';
     board.style.display = 'grid';
     // Đặt lại điểm số trò chơi, trạng thái đang chọn và thời gian còn lại
@@ -216,6 +249,7 @@ function drawCells() {
         myCanvas.style.zIndex = -1;
     }, 300);
     addEventForCell();
+
 }
 
 function isPossibleToMoveLeft(row) {
@@ -435,7 +469,7 @@ function moveLeftHaftToRight() {
     drawCells();
 }
 
-function swapRowX() {
+function swapRow() {
     let row = []
     for (let i = 1; i < boardWidth - 1; i++) {
         row[i] = cells[boardWidth + i].value;
@@ -457,16 +491,46 @@ function swapRowX() {
     drawCells();
 }
 
+function swapColumn() {
+    let col = [];
+    for (let i = 1; i < boardHeight - 1; i++) {
+        col[i] = cells[boardWidth * i + 1].value;
+    }
+    for (let i = 1; i < boardWidth - 1; i++) {
+        let j = i + 1;
+        if (j < boardWidth - 1) {
+            for (let k = 1; k < boardHeight - 1; k++) {
+                cells[k * boardWidth + i].value = cells[k * boardWidth + j].value;
+            }
+        }
+    }
+    for (let i = 1; i < boardHeight - 1; i++) {
+        cells[i * boardWidth + (boardWidth - 2)].value = col[i];
+    }
+    col.length = 0;
+    drawCells();
+}
+
 function showScore() {
     document.getElementById("score").innerHTML = "Score: " + gameScore;
 }
 
 // Hàm timeHandle để xử lý thời gian trong trò chơi
+let intervalId = null;
+let isPaused = false;
+
 function timeHandle() {
     // Hiển thị thời gian còn lại lên màn hình
     document.getElementById("time").innerHTML = "Time: " + timeLeft;
+
+    // Kiểm tra xem có hàm setInterval nào đang chạy không
+    if (intervalId !== null) {
+        // Nếu có, hủy hàm setInterval đó
+        clearInterval(intervalId);
+    }
+
     // Cài đặt hàm setInterval để thực hiện hàm bên trong sau mỗi 1000ms (1 giây)
-    setInterval(() => {
+    intervalId = setInterval(() => {
         // Nếu thời gian còn lại bằng 0 thì hiển thị thông báo game over
         if (timeLeft === 0)
             document.getElementById("game-over").style.display = "block";
@@ -475,9 +539,36 @@ function timeHandle() {
         // Nếu thời gian còn lại lớn hơn 0 và trò chơi chưa thắng thì giảm thời gian còn lại đi 1
         if (timeLeft > 0 && isWin === false)
             timeLeft -= 1;
-
     }, 1000);
 }
+
+let onGround = document.getElementById("on-ground")
+
+function pauseTime() {
+    // Kiểm tra xem có hàm setInterval nào đang chạy không
+    if (intervalId !== null) {
+        // Nếu có, hủy hàm setInterval đó
+        clearInterval(intervalId);
+        // Đặt lại intervalId thành null
+        intervalId = null;
+    }
+}
+
+// Tạo một nút để tạm dừng và tiếp tục thời gian
+let button = document.getElementById("pause")
+button.onclick = function () {
+    if (isPaused) {
+        onGround.classList.remove("overplay")
+        timeHandle();
+        isPaused = false;
+    } else {
+        onGround.classList.add("overplay")
+        pauseTime();
+        isPaused = true;
+    }
+};
+
+// Thêm nút vào trang
 
 function checkSelfChosen(id1, id2) {
     return id1 !== id2;
@@ -929,12 +1020,24 @@ function mainAlgorithim() {
             gameScore += 100;
             // Đặt zIndex của canvas thành 20
             myCanvas.style.zIndex = 20;
+            switch (level) {
+                case 2:
+                    flowToLeft()
+                    break
+                case 3:
+                    flowToTop()
+                    break
+                case 4:
+                    moveLeftHaftToRight();
+                    moveRightHaftToLeft()
+                    break
+                case 5:
+                    swapRow()
+                    break
+                case 6:
+                    swapColumn()
+            }
             // Thêm sự kiện cho các ô
-            swapRowX();
-            // flowToTop();
-            // flowToLeft();
-            // moveLeftHaftToRight();
-            // moveRightHaftToLeft()
             addEventForCell();
         }
         // Loại bỏ trạng thái đã chọn của 2 ô đã chọn
@@ -945,6 +1048,7 @@ function mainAlgorithim() {
         isSelecting = 0;
 
     }
+    WinGame();
 
 }
 
@@ -996,7 +1100,7 @@ function game() {
     mainAlgorithim();
     showScore();
     drawCells()
-    WinGame();
+
     if (isOkieToShuffle()) {
         handleSwap();
     }

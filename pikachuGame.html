@@ -6,7 +6,9 @@
     <title>Pikachu</title>
     <link rel="stylesheet" href="style.css">
     <link href="https://fonts.googleapis.com/css2?family=Lobster&display=swap" rel="stylesheet">
-
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css"
+          integrity="sha512-SnH5WK+bZxgPHs44uWIX+LLJAJ9/2PkPKZ5QiAj6Ta86w+fsb2TkcmfRyVX3pBnMFcV7oQPJkl9QevSCWr3W6A=="
+          crossorigin="anonymous" referrerpolicy="no-referrer"/>
 </head>
 <body>
 <div class="container">
@@ -14,6 +16,10 @@
         <div id="info">
             <p id="time">Time: 200</p>
             <p id="score">Score: 500</p>
+            <p id="level-label">Level: <span id="text-level"></span></p>
+            <div class="shuffle" onclick="swapCell()"><i class="fa-solid fa-shuffle"></i></div>
+            <div id="pause" class="pause"><i class="fa-solid fa-pause"></i></div>
+            <div id="on-ground"></div>
         </div>
         <div id="game-board">
             <!-- <canvas id="myCanvas"></canvas> -->
@@ -22,22 +28,7 @@
             <p>Game Over</p>
             <div class="level-container">
                 <div class="level-btn">
-                    <button class="re-btn" onclick="init()">Level 1</button>
-                </div>
-                <div class="level-btn">
-                    <button class="re-btn" onclick="init()">Level 2</button>
-                </div>
-                <div class="level-btn">
-                    <button class="re-btn" onclick="init()">Level 3</button>
-                </div>
-                <div class="level-btn">
-                    <button class="re-btn" onclick="init()">Level 4</button>
-                </div>
-                <div class="level-btn">
-                    <button class="re-btn" onclick="init()">Level 5</button>
-                </div>
-                <div class="level-btn">
-                    <button class="re-btn" onclick="init()">Level 6</button>
+                    <button class="re-btn" onclick="init()">Restart</button>
                 </div>
             </div>
         </div>
@@ -45,45 +36,27 @@
             <p>Victory</p>
             <div class="level-container">
                 <div class="level-btn">
-                    <button class="re-btn" onclick="init()">Level 1</button>
+                    <button class="re-btn" onclick="init()">Restart</button>
                 </div>
-                <div class="level-btn">
-                    <button class="re-btn" onclick="init()">Level 2</button>
-                </div>
-                <div class="level-btn">
-                    <button class="re-btn" onclick="init()">Level 3</button>
-                </div>
-                <div class="level-btn">
-                    <button class="re-btn" onclick="init()">Level 4</button>
-                </div>
-                <div class="level-btn">
-                    <button class="re-btn" onclick="init()">Level 5</button>
-                </div>
-                <div class="level-btn">
-                    <button class="re-btn" onclick="init()">Level 6</button>
-                </div>
+
             </div>
         </div>
         <div id="level">
             <p>Pikachu Game</p>
             <div class="level-container">
-                <div class="level-btn">
-                    <button class="re-btn" onclick="init()">Level 1</button>
+                <div class="select-option">
+                    <select name="choices" id="choices">
+                        <option value="level1">Level 1</option>
+                        <option value="level2">Level 2</option>
+                        <option value="level3">Level 3</option>
+                        <option value="level4">Level 4</option>
+                        <option value="level5">Level 5</option>
+                        <option value="level6">Level 6</option>
+                    </select>
                 </div>
+
                 <div class="level-btn">
-                    <button class="re-btn" onclick="init()">Level 2</button>
-                </div>
-                <div class="level-btn">
-                    <button class="re-btn" onclick="init()">Level 3</button>
-                </div>
-                <div class="level-btn">
-                    <button class="re-btn" onclick="init()">Level 4</button>
-                </div>
-                <div class="level-btn">
-                    <button class="re-btn" onclick="init()">Level 5</button>
-                </div>
-                <div class="level-btn">
-                    <button class="re-btn" onclick="init()">Level 6</button>
+                    <button class="re-btn" onclick="init()">Start Game</button>
                 </div>
             </div>
         </div>

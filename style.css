@@ -6,7 +6,7 @@
 body {
   margin: 0;
   padding: 0;
-  color: rgb(255, 62, 191);
+  color: rgb(50, 205, 50);
   font-family: "Lobster", cursive;
 }
 
@@ -23,26 +23,65 @@ img {
     transform: rotate(360deg);
   }
 }
+body {
+  background: url("image/R (1).jpeg") no-repeat;
+  background-size: cover;
+  margin: 0;
+  padding: 0;
+}
+
 .container {
   height: 100%;
 }
 .container #game-container {
   text-align: center;
-  margin: auto;
   width: 50%;
   position: relative;
+  margin: auto;
+  background: url("image/bg.jpg") no-repeat;
 }
 .container #game-container h1 {
   margin: 0;
 }
 .container #game-container #info {
   display: none;
-  padding: 80px 45px 0;
+  padding: 35px 45px 0;
 }
 .container #game-container #info p {
-  margin: 0;
   padding: 0;
   font-size: 24px;
+  margin: 0 0 10px;
+}
+.container #game-container #info .shuffle {
+  background-color: rgb(50, 205, 50);
+  display: inline-block;
+  padding: 10px 12px;
+  border-radius: 4px;
+  margin-top: 5px;
+  cursor: pointer;
+}
+.container #game-container #info .shuffle i {
+  color: white;
+}
+.container #game-container #info #pause {
+  background-color: rgb(50, 205, 50);
+  display: inline-block;
+  padding: 10px 15px;
+  border-radius: 4px;
+  margin-top: 5px;
+  cursor: pointer;
+}
+.container #game-container #info #pause i {
+  color: white;
+}
+.container #game-container #info .overplay {
+  position: absolute;
+  top: 245px;
+  left: 111px;
+  width: 540px;
+  height: 450px;
+  background-color: rgba(0, 0, 0, 0.1);
+  z-index: 9999;
 }
 .container #game-container #game-board {
   position: relative;
@@ -91,12 +130,12 @@ img {
   letter-spacing: 1px;
   font-size: 40px;
   outline: 0;
-  background-color: rgb(252, 99, 226);
+  background-color: rgb(50, 205, 50);
   color: white;
   border-radius: 20px;
-  border: 2px solid rgb(235, 18, 18);
+  border: 2px solid rgb(50, 205, 50);
   margin-bottom: 20px;
-  width: 50%;
+  width: 30%;
 }
 .container #game-container #game-overhover {
   cursor: pointer;
@@ -111,6 +150,7 @@ img {
   font-size: 80px;
   z-index: 50;
   display: none;
+  position: absolute;
 }
 .container #game-container #win-game p {
   margin: 0;
@@ -130,12 +170,12 @@ img {
   letter-spacing: 1px;
   font-size: 40px;
   outline: 0;
-  background-color: rgb(252, 99, 226);
+  background-color: rgb(50, 205, 50);
   color: white;
   border-radius: 20px;
-  border: 2px solid rgb(235, 18, 18);
+  border: 2px solid rgb(50, 205, 50);
   margin-bottom: 20px;
-  width: 50%;
+  width: 30%;
 }
 .container #game-container #win-gamehover {
   cursor: pointer;
@@ -149,12 +189,15 @@ img {
   left: 0;
   font-size: 80px;
   z-index: 50;
+  background: url("image/R.jpeg") no-repeat;
+  background-size: cover;
 }
 .container #game-container #level p {
   margin: 0;
   margin-top: 90px;
   position: relative;
-  margin-bottom: 20px;
+  margin-bottom: 50px;
+  color: rgb(50, 205, 50);
 }
 .container #game-container #level .level-container {
   display: flex;
@@ -162,19 +205,43 @@ img {
 }
 .container #game-container #level .level-container .level-btn {
   flex-basis: 100%;
-  height: 70px;
+  height: 170px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 .container #game-container #level .level-container .level-btn button {
   font-family: Cambria, Cochin, Georgia, Times, "Times New Roman", serif;
   letter-spacing: 1px;
   font-size: 40px;
   outline: 0;
-  background-color: rgb(252, 99, 226);
+  background-color: rgb(50, 205, 50);
   color: white;
   border-radius: 20px;
-  border: 2px solid rgb(235, 18, 18);
+  border: 2px solid rgb(50, 205, 50);
   margin-bottom: 20px;
-  width: 50%;
+  width: 30%;
+}
+.container #game-container #level .level-container .select-option {
+  flex-basis: 100%;
+  height: 170px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.container #game-container #level .level-container .select-option #choices {
+  font-family: Cambria, Cochin, Georgia, Times, "Times New Roman", serif;
+  letter-spacing: 1px;
+  font-size: 40px;
+  outline: 0;
+  background-color: rgb(50, 205, 50);
+  color: white;
+  border-radius: 20px;
+  border: 2px solid rgb(50, 205, 50);
+  margin-bottom: 20px;
+  width: 30%;
+  font-size: 30px;
+  text-align: center;
 }
 .container #game-container #levelhover {
   cursor: pointer;
