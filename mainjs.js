@@ -1,4 +1,4 @@
-let boardWidth = 14; // Chiều rộng của bàn cờ (số ô trong một hàng)
+﻿let boardWidth = 14; // Chiều rộng của bàn cờ (số ô trong một hàng)
 let boardHeight = 12;// Chiều cao của bàn cờ (số ô trong một cột)
 let colCell = boardWidth - 2; // Số cột cho các ô (tính toán từ boardWidth)
 let rowCell = boardHeight - 2; // Số hàng cho các ô (tính toán từ boardHeight)
@@ -29,10 +29,17 @@ for (let i = 0; i <= typeNum; i++) {
 }
 
 function nextLevel() {
-    level++;
-    init()
-
+    if (level < 6 && level >= 1) {
+        reset();
+        level++;
+        init();
+    } else if (level === 6) {
+        reset();
+        level = 1;
+        init();
+    }
 }
+
 
 //Tạo ngẫu nhiên 1 số nằm giữa min và max
 function getRndInteger(min, max) {
@@ -40,56 +47,56 @@ function getRndInteger(min, max) {
 }
 
 function drawLineFromXtoY(x1, y1, x2, y2, ctx) {
-    ctx.lineWidth = 1;
-    ctx.strokeStyle = "red";
-    ctx.beginPath();
-    ctx.moveTo(x1, y1);
-    ctx.lineTo(x2, y2);
-    ctx.stroke();
+    ctx.lineWidth = 1; // Đặt độ rộng của đường vẽ là 1 pixel
+    ctx.strokeStyle = "red"; // Đặt màu sắc của đường vẽ là màu đỏ
+    ctx.beginPath(); // Bắt đầu một đường vẽ mới
+    ctx.moveTo(x1, y1); // Di chuyển bút vẽ đến điểm bắt đầu có tọa độ (x1, y1)
+    ctx.lineTo(x2, y2); // Vẽ một đường thẳng từ điểm hiện tại đến điểm có tọa độ (x2, y2)
+    ctx.stroke(); // Thực hiện việc vẽ đường thẳng trên canvas
 }
+
 
 //Tạo giá trị random cho ô
 function createRandomValueForCell() {
-    let t = Math.floor(Math.random() * typeNum) + 1;
-    while (checkTypeNum[t] >= numEachType) {
-        t = Math.floor(Math.random() * typeNum) + 1;
+    let t = Math.floor(Math.random() * typeNum) + 1; // Tạo một giá trị ngẫu nhiên từ 1 đến 20
+    while (checkTypeNum[t] >= numEachType) { // Nếu số lượng của loại t đã đạt đến giới hạn cho phép
+        t = Math.floor(Math.random() * typeNum) + 1; // Tạo lại giá trị ngẫu nhiên cho t
     }
-    checkTypeNum[t] += 1;
-    return t;
+    checkTypeNum[t] += 1; // Tăng số lượng của loại t lên 1
+    return t; // Trả về giá trị của t
 }
 
-//Tạo đối tượng cell và các thuộc tính của cell
+
 function cell(id, value, x, y) {
-    this.id = id;
-    this.value = value;
+    this.id = id; // ID của ô
+    this.value = value; // Giá trị của ô
     this.x = x; // Chỉ số của cột
     this.y = y; // Chỉ số của dòng
-    this.width = cellSize;
-    this.height = cellSize;
-    this.centerX = (this.x) + (this.width) / 2;
-    this.centerY = (this.y) + (this.height) / 2;
-    this.isSelected = false;
-    this.image = document.createElement("div");
-    this.image.setAttribute("class", "cell");
-    this.image.setAttribute("id", this.id + "");
-    this.draw = function () {
-        if (this.value !== 0) {
-            this.image.innerHTML = '<image src="image/pic' + this.value + '.png" alt="">';
-            this.image.style.border = "2px solid rgb(50 205 50)";
-            this.image.style.cursor = "pointer";
-        } else {
+    this.width = cellSize; // Chiều rộng của ô
+    this.height = cellSize; // Chiều cao của ô
+    this.centerX = (this.x) + (this.width) / 2; // Tọa độ X của trung tâm ô
+    this.centerY = (this.y) + (this.height) / 2; // Tọa độ Y của trung tâm ô
+    this.isSelected = false; // Trạng thái được chọn của ô
+    this.image = document.createElement("div"); // Tạo một phần tử div mới
+    this.image.setAttribute("class", "cell"); // Đặt class của phần tử div là "cell"
+    this.image.setAttribute("id", this.id + ""); // Đặt ID của phần tử div là ID của ô
+    this.draw = function () { // Phương thức vẽ ô
+        if (this.value !== 0) { // Nếu giá trị của ô khác 0
+            this.image.innerHTML = '<image src="image/pic' + this.value + '.png" alt="">'; // Đặt nội dung HTML của phần tử div là một hình ảnh
+            this.image.style.border = "2px solid rgb(50 205 50)"; // Đặt viền của phần tử div là 2px và màu xanh lá cây
+            this.image.style.cursor = "pointer"; // Đặt con trỏ chuột khi di chuyển qua phần tử div là con trỏ
+        } else { // Nếu giá trị của ô là 0
             if (this.id > boardWidth && this.id <= boardWidth * boardHeight - boardWidth && this.id % boardWidth !== 0 && (this.id + 1) % boardWidth !== 0) {
-                this.image.style.border = "2px solid rgb(50 205 50)";
+                this.image.style.border = "2px solid rgb(50 205 50)"; // Đặt viền của phần tử div là 2px và màu xanh lá cây
             } else {
-                this.image.style.border = "none";
+                this.image.style.border = "none"; // Không đặt viền cho phần tử div
             }
-            this.image.style.cursor = "auto";
-            this.image.innerHTML = "";
-            this.image.style.backgroundColor = "rgba(255, 255, 255, 0)";
+            this.image.style.cursor = "auto"; // Đặt con trỏ chuột khi di chuyển qua phần tử div là con trỏ mặc định
+            this.image.innerHTML = ""; // Không đặt nội dung HTML cho phần tử div
+            this.image.style.backgroundColor = "rgba(255, 255, 255, 0)"; // Đặt màu nền của phần tử div là trong suốt
         }
-        board.appendChild(this.image);
+        board.appendChild(this.image); // Thêm phần tử div vào bảng
     }
-
 }
 
 
@@ -117,7 +124,7 @@ function swapCell() {
 }
 
 // Hàm handleClick để xử lý sự kiện click
-function handleClick(e) {
+function handleClick() {
     // Kiểm tra nếu className của đối tượng được click chứa chuỗi " onSelect"
     if (this.className.indexOf(" onSelect") !== -1) {
         // Nếu có, thay thế chuỗi " onSelect" bằng chuỗi rỗng
@@ -151,88 +158,86 @@ function addEventForCell() {
     }
 }
 
+function reset() {
+    board.innerHTML = '';
+}
+
+function levelSelect() {
+    selectedOption = selectElement.options[selectElement.selectedIndex].value; // Lấy giá trị của tùy chọn được chọn từ selectElement
+    switch (selectedOption) { // Đặt cấp độ trò chơi dựa trên tùy chọn được chọn
+        case "level1":
+            level = 1;
+            break;
+        case "level2":
+            level = 2;
+            break;
+        case "level3":
+            level = 3;
+            break;
+        case "level4":
+            level = 4;
+            break;
+        case "level5":
+            level = 5;
+            break;
+        case "level6":
+            level = 6;
+            break;
+    }
+}
 
 // Hàm init để khởi tạo lại trò chơi
 function init() {
-    selectedOption = selectElement.options[selectElement.selectedIndex].value;
-    console.log(selectedOption)
-    switch (selectedOption) {
-        case "level1":
-            level = 1;
-            break
-        case "level2":
-            level = 2;
-            break
-        case "level3":
-            level = 3;
-            break
-        case "level4":
-            level = 4;
-            break
-        case "level5":
-            level = 5;
-            break
-        case "level6":
-            level = 6;
-            break
 
+    if (level === 0) {
+        levelSelect();
     }
-    document.getElementById("text-level").textContent = level
-    info.style.display = 'block';
-    board.style.display = 'grid';
-    // Đặt lại điểm số trò chơi, trạng thái đang chọn và thời gian còn lại
-    gameScore = 0;
-    isSelecting = 0;
-    timeLeft = gameTime;
-    // Tạo một canvas mới trong game board
-    board.innerHTML = " <canvas id='myCanvas' width='630' height='540'></canvas>";
-    // Đặt trạng thái thắng trò chơi là false
-    isWin = false;
-    // Lấy phần tử canvas và context 2D từ canvas
-    myCanvas = document.getElementById("myCanvas");
-    ctx = myCanvas.getContext("2d");
-    // Đặt lại số lượng của từng loại pikachu
+    console.log(level)
+    document.getElementById("text-level").textContent = level; // Hiển thị cấp độ trò chơi
+    info.style.display = 'block'; // Hiển thị thông tin trò chơi
+    board.style.display = 'grid'; // Hiển thị bảng trò chơi
+    gameScore = 0; // Đặt lại điểm số trò chơi
+    isSelecting = 0; // Đặt lại trạng thái đang chọn
+    timeLeft = gameTime; // Đặt lại thời gian còn lại
+    board.innerHTML = " <canvas id='myCanvas' width='630' height='540'></canvas>"; // Tạo một canvas mới trong bảng trò chơi
+    isWin = false; // Đặt trạng thái thắng trò chơi là false
+    myCanvas = document.getElementById("myCanvas"); // Lấy phần tử canvas
+    ctx = myCanvas.getContext("2d"); // Lấy context 2D từ canvas
     for (let i = 0; i <= typeNum; i++) {
-        checkTypeNum[i] = 0;
+        checkTypeNum[i] = 0; // Đặt lại số lượng của từng loại
     }
-    // Xóa mảng cells
-    cells.splice(0, cells.length);
-    // Tạo giá trị column để set style cho gameBoard thành gridTemplateColumns
+    cells.splice(0, cells.length); // Xóa mảng cells
     let temp = "";
     for (let i = 0; i < boardWidth; i++) {
-        temp += cellSize + "px ";
+        temp += cellSize + "px "; // Tạo giá trị column để set style cho gameBoard thành gridTemplateColumns
     }
     board.style.gridTemplateColumns = temp;
-    // Tạo giá trị row để set style cho gameBoard thành gridTemplateRows
     temp = "";
     for (let i = 0; i < boardHeight; i++) {
-        temp += cellSize + "px ";
+        temp += cellSize + "px "; // Tạo giá trị row để set style cho gameBoard thành gridTemplateRows
     }
     board.style.gridTemplateRows = temp;
-    // Tạo giá trị cho từng ô, các dòng và cột viền có giá trị bằng 0
     for (let i = 0; i < boardHeight; i++) {
         for (let j = 0; j < boardWidth; j++) {
-            let id = j + i * boardWidth;
+            let id = j + i * boardWidth; // Tạo ID cho ô
             let value = 0;
             if (i === 0 || i === boardHeight - 1 || j === 0 || j === boardWidth - 1) {
-                value = 0;
+                value = 0; // Các dòng và cột viền có giá trị bằng 0
             } else {
-                value = createRandomValueForCell();
+                value = createRandomValueForCell(); // Tạo giá trị ngẫu nhiên cho ô
             }
-            cells.push(new cell(id, value, cellSize * (j), cellSize * (i)));
+            cells.push(new cell(id, value, cellSize * (j), cellSize * (i))); // Tạo một ô mới và thêm vào mảng cells
         }
     }
-    // Ẩn các phần tử game-over, win-game và reload
-    document.getElementById("game-over").style.display = "none";
-    document.getElementById("win-game").style.display = "none";
-    document.getElementById("reload").style.display = "none";
-    document.getElementById("level").style.display = "none";
-
-    // Gọi hàm thêm sự kiện cho các ô có giá trị value khác 0
-    addEventForCell();
-    timeHandle();
-    game();
+    document.getElementById("game-over").style.display = "none"; // Ẩn phần tử game-over
+    document.getElementById("win-game").style.display = "none"; // Ẩn phần tử win-game
+    document.getElementById("reload").style.display = "none"; // Ẩn phần tử reload
+    document.getElementById("level").style.display = "none"; // Ẩn phần tử level
+    addEventForCell(); // Gọi hàm thêm sự kiện cho các ô có giá trị value khác 0
+    timeHandle(); // Gọi hàm xử lý thời gian
+    game(); // Bắt đầu trò chơi
 }
+
 
 // Hàm drawCells để vẽ các ô lên canvas sau một khoảng thời gian chờ
 function drawCells() {
@@ -253,45 +258,48 @@ function drawCells() {
 }
 
 function isPossibleToMoveLeft(row) {
-    let index = 0;
-    for (let i = 1; i < boardWidth - 1; i++) {
-        if (cells[i + row * boardWidth].value === 0) {
-            index = i;
-            break;
+    let index = 0; // Khởi tạo chỉ số
+    for (let i = 1; i < boardWidth - 1; i++) { // Duyệt qua từng ô trong hàng
+        if (cells[i + row * boardWidth].value === 0) { // Nếu giá trị của ô là 0
+            index = i; // Cập nhật chỉ số
+            break; // Thoát vòng lặp
         }
     }
-    for (let i = 1; i < boardWidth - 1; i++) {
-        if (cells[i + row * boardWidth].value !== 0 && i > index) {
-            return false;
+    for (let i = 1; i < boardWidth - 1; i++) { // Duyệt qua từng ô trong hàng một lần nữa
+        if (cells[i + row * boardWidth].value !== 0 && i > index) { // Nếu giá trị của ô khác 0 và chỉ số của ô lớn hơn chỉ số đã tìm được
+            return true;
         }
     }
-    return true;
+    return false; // Nếu không tìm thấy ô nào không thể di chuyển, trả về true
 }
+
 
 function isPossibleToMoveTop(col) {
-    let index = 0;
-    for (let i = 1; i < boardHeight - 1; i++) {
-        if (cells[i * boardWidth + col].value === 0) {
-            index = i;
-            break;
+    let index = 0; // Khởi tạo chỉ số
+    for (let i = 1; i < boardHeight - 1; i++) { // Duyệt qua từng ô trong cột
+        if (cells[i * boardWidth + col].value === 0) { // Nếu giá trị của ô là 0
+            index = i; // Cập nhật chỉ số
+            break; // Thoát vòng lặp
         }
     }
-    for (let i = 1; i < boardHeight; i++) {
-        if (cells[i * boardWidth + col].value !== 0 && i > index) {
-            return false;
+    for (let i = 1; i < boardHeight; i++) { // Duyệt qua từng ô trong cột một lần nữa
+        if (cells[i * boardWidth + col].value !== 0 && i > index) { // Nếu giá trị của ô khác 0 và chỉ số của ô lớn hơn chỉ số đã tìm được
+            return true;
         }
     }
-    return true;
+    return false; // Nếu không tìm thấy ô nào không thể di chuyển, trả về true
 }
 
+
 function check0CellInRowLeft(start, row) {
-    for (let i = start; i < boardWidth - 1; i++) {
-        if (cells[row * boardWidth + i].value !== 0) {
-            return i;
+    for (let i = start; i < boardWidth - 1; i++) { // Duyệt qua từng ô trong hàng từ vị trí bắt đầu đến cuối hàng
+        if (cells[row * boardWidth + i].value !== 0) { // Nếu giá trị của ô khác 0 (tức là ô không rỗng)
+            return i; // Trả về chỉ số của ô
         }
     }
-    return -1;
+    return -1; // Nếu không tìm thấy ô nào không rỗng, trả về -1
 }
+
 
 function check0CellInColumnTop(start, col) {
     for (let i = start; i < boardHeight - 1; i++) {
@@ -313,23 +321,30 @@ function swapCellY(k, index, col) {
 }
 
 function flowToLeft() {
+    // Duyệt qua từng hàng
     for (let i = 1; i < boardHeight - 1; i++) {
+        // Lấy giá trị hàng hiện tại
         let row = i;
         let count = 0;
+        // Duyệt qua từng ô của hàng hiện tại
         for (let j = 1; j < boardWidth - 1; j++) {
+            // Nếu có ô có giá trị bằng 0, tăng biến đếm count
             if (cells[i * boardWidth + j].value === 0) {
                 count++;
             }
         }
         if (count !== 0 && count !== boardWidth - 2) {
-            // Tiếp tục thực hiện vòng lặp cho đến khi không thể di chuyển sang trái nữa
-            while (!isPossibleToMoveLeft(row)) {
-                // Duyệt qua từng phần tử của hàng
+            // Thực hiện vòng lặp kiểm tra xem các ô có giá trị khác không có thể di chuyển sang trái
+            while (isPossibleToMoveLeft(row)) {
+                // Duyệt qua từng ô của hàng
                 for (let k = 1; k < boardWidth - 1; k++) {
-                    // Nếu phần tử bằng 0
+                    // Nếu ô bằng 0
                     if (cells[row * boardWidth + k].value === 0) {
+                        // Lấy vị trí ô có giá trị khác 0 trong nằm bên phải ô có giá trị bằng 0 đang xét
                         let index = check0CellInRowLeft(k, row);
+                        // Nếu vị trí khác -1
                         if (index !== -1) {
+                            // Đổi vị trí 2 ô
                             swapCellX(k, index, row)
                             break;
                         }
@@ -342,20 +357,30 @@ function flowToLeft() {
 }
 
 function flowToTop() {
+    // Duyệt qua từng cột
     for (let i = 1; i < boardWidth - 1; i++) {
+        // Lấy giá trị cột hiện tại
         let col = i;
         let count = 0;
+        // Duyệt qua từng ô của cột hiện tại
         for (let j = 1; j < boardHeight - 1; j++) {
+            // Nếu có ô có giá trị bằng 0, tăng biến đếm count
             if (cells[j * boardWidth + i].value === 0) {
                 count++;
             }
         }
         if (count !== 0 && count !== boardHeight - 2) {
-            while (!isPossibleToMoveTop(col)) {
+            // Thực hiện vòng lặp kiểm tra xem các ô có giá trị khác không có thể di chuyển lên trên
+            while (isPossibleToMoveTop(col)) {
+                // Duyệt qua từng ô của cột
                 for (let k = 1; k < boardHeight - 1; k++) {
+                    // Nếu ô bằng 0
                     if (cells[k * boardWidth + col].value === 0) {
+                        // Lấy vị trí ô có giá trị khác 0 trong nằm bên dưới ô có giá trị bằng 0 đang xét
                         let index = check0CellInColumnTop(k, col);
+                        // Nếu vị trí khác -1
                         if (index !== -1) {
+                            // Đổi vị trí 2 ô
                             swapCellY(k, index, col);
                             break;
                         }
@@ -377,10 +402,10 @@ function isPossibleToMoveRightHaftToLeft(row) {
     }
     for (let i = 6; i > 0; i--) {
         if (cells[row * boardWidth + i].value !== 0 && i < index) {
-            return false
+            return true;
         }
     }
-    return true
+    return false;
 }
 
 function check0CellInRowMoveRightHaftToLeft(start, row) {
@@ -392,20 +417,30 @@ function check0CellInRowMoveRightHaftToLeft(start, row) {
     return -1;
 }
 
+// 1 nửa bên trái
 function moveRightHaftToLeft() {
+    // Duyệt qua từng hàng
     for (let i = 1; i < boardHeight - 1; i++) {
+        // Lấy giá trị hàng hiện tại
         let row = i;
         let count = 0;
+        // Duyệt qua từng ô từ 1 đến 6 của hàng hiện tại
         for (let j = 1; j < 7; j++) {
+            // Nếu có ô có giá trị bằng 0, tăng biến đếm count
             if (cells[row * boardWidth + j].value === 0) {
                 count++;
             }
         }
         if (count !== 0 && count !== 6) {
-            while (!isPossibleToMoveRightHaftToLeft(row)) {
+            // Thực hiện vòng lặp kiểm tra xem các ô có giá trị khác 0 có thể di chuyển sang phải
+            while (isPossibleToMoveRightHaftToLeft(row)) {
+                // Duyệt qua từng ô từ 6 đến 1 của hàng
                 for (let k = 6; k > 0; k--) {
+                    // Nếu ô bằng 0
                     if (cells[row * boardWidth + k].value === 0) {
+                        // Lấy vị trí ô có giá trị khác 0 trong nằm bên trái ô có giá trị bằng 0 đang xét
                         let index = check0CellInRowMoveRightHaftToLeft(k, row);
+                        // Nếu vị trí khác -1
                         if (index !== -1) {
                             swapCellX(k, index, row)
                             break;
@@ -437,26 +472,36 @@ function isPossibleToMoveLeftHaftToRight(row) {
     }
     for (let i = 7; i < boardWidth - 1; i++) {
         if (cells[row * boardWidth + i].value !== 0 && i > index) {
-            return false
+            return true
         }
     }
-    return true
+    return false
 }
 
+// 1 nửa bên phải
 function moveLeftHaftToRight() {
+    // Duyệt qua từng hàng
     for (let i = 1; i < boardHeight - 1; i++) {
+        // Lấy giá trị hàng hiện tại
         let row = i;
         let count = 0;
+        // Duyệt qua từng ô từ 7 đến 12 của hàng hiện tại
         for (let j = 7; j < boardWidth - 1; j++) {
+            // Nếu có ô có giá trị bằng 0, tăng biến đếm count
             if (cells[i * boardWidth + j].value === 0) {
                 count++;
             }
         }
         if (count !== 0 && count !== 6) {
-            while (!isPossibleToMoveLeftHaftToRight(row)) {
+            // Thực hiện vòng lặp kiểm tra xem các ô có giá trị khác 0 có thể di chuyển sang trái
+            while (isPossibleToMoveLeftHaftToRight(row)) {
+                // Duyệt qua từng ô từ 7 đến 12 của hàng
                 for (let k = 7; k < boardWidth - 1; k++) {
+                    // Nếu ô bằng 0
                     if (cells[row * boardWidth + k].value === 0) {
+                        // Lấy vị trí ô có giá trị khác 0 trong nằm bên phải ô có giá trị bằng 0 đang xét
                         let index = check0CellInRowMoveLeftHaftToRight(k, row);
+                        // Nếu vị trí khác -1
                         if (index !== -1) {
                             swapCellX(k, index, row)
                             break;
@@ -470,46 +515,46 @@ function moveLeftHaftToRight() {
 }
 
 function swapRow() {
-    let row = []
-    for (let i = 1; i < boardWidth - 1; i++) {
-        row[i] = cells[boardWidth + i].value;
+    let row = [] // Khởi tạo một mảng để lưu giá trị các ô của hàng đầu tiên
+    for (let i = 1; i < boardWidth - 1; i++) { // Duyệt qua từng ô trong hàng đầu tiên
+        row[i] = cells[boardWidth + i].value; // Lưu giá trị của ô vào mảng
     }
-    for (let i = 1; i < boardHeight - 1; i++) {
-        let j = i + 1;
-        if (j < boardHeight - 1) {
-            for (let k = 1; k < boardWidth - 1; k++) {
-                cells[i * boardWidth + k].value = cells[j * boardWidth + k].value;
+    for (let i = 1; i < boardHeight - 1; i++) { // Duyệt qua từng hàng từ hàng thứ hai đến hàng cuối cùng
+        let j = i + 1; // Chỉ số của hàng tiếp theo
+        if (j < boardHeight - 1) { // Nếu hàng tiếp theo không phải là hàng cuối cùng
+            for (let k = 1; k < boardWidth - 1; k++) { // Duyệt qua từng ô trong hàng
+                cells[i * boardWidth + k].value = cells[j * boardWidth + k].value; // Đặt giá trị của ô trong hàng hiện tại bằng giá trị của ô trong hàng tiếp theo
             }
         }
-
     }
-    for (let i = 1; i < boardWidth - 1; i++) {
-        cells[(boardHeight - 2) * boardWidth + i].value = row[i];
-
+    for (let i = 1; i < boardWidth - 1; i++) { // Duyệt qua từng ô trong hàng cuối cùng
+        cells[(boardHeight - 2) * boardWidth + i].value = row[i]; // Đặt giá trị của ô trong hàng cuối cùng bằng giá trị đã lưu trong mảng
     }
-    row.length = 0
-    drawCells();
+    row.length = 0 // Xóa mảng
+    drawCells(); // Vẽ lại các ô trên bảng trò chơi
 }
+
 
 function swapColumn() {
-    let col = [];
-    for (let i = 1; i < boardHeight - 1; i++) {
-        col[i] = cells[boardWidth * i + 1].value;
+    let col = []; // Khởi tạo một mảng để lưu giá trị các ô của cột đầu tiên
+    for (let i = 1; i < boardHeight - 1; i++) { // Duyệt qua từng ô trong cột đầu tiên
+        col[i] = cells[boardWidth * i + 1].value; // Lưu giá trị của ô vào mảng
     }
-    for (let i = 1; i < boardWidth - 1; i++) {
-        let j = i + 1;
-        if (j < boardWidth - 1) {
-            for (let k = 1; k < boardHeight - 1; k++) {
-                cells[k * boardWidth + i].value = cells[k * boardWidth + j].value;
+    for (let i = 1; i < boardWidth - 1; i++) { // Duyệt qua từng cột từ cột thứ hai đến cột cuối cùng
+        let j = i + 1; // Chỉ số của cột tiếp theo
+        if (j < boardWidth - 1) { // Nếu cột tiếp theo không phải là cột cuối cùng
+            for (let k = 1; k < boardHeight - 1; k++) { // Duyệt qua từng ô trong cột
+                cells[k * boardWidth + i].value = cells[k * boardWidth + j].value; // Đặt giá trị của ô trong cột hiện tại bằng giá trị của ô trong cột tiếp theo
             }
         }
     }
-    for (let i = 1; i < boardHeight - 1; i++) {
-        cells[i * boardWidth + (boardWidth - 2)].value = col[i];
+    for (let i = 1; i < boardHeight - 1; i++) { // Duyệt qua từng ô trong cột cuối cùng
+        cells[i * boardWidth + (boardWidth - 2)].value = col[i]; // Đặt giá trị của ô trong cột cuối cùng bằng giá trị đã lưu trong mảng
     }
-    col.length = 0;
-    drawCells();
+    col.length = 0; // Xóa mảng
+    drawCells(); // Vẽ lại các ô trên bảng trò chơi
 }
+
 
 function showScore() {
     document.getElementById("score").innerHTML = "Score: " + gameScore;
@@ -623,11 +668,11 @@ function checkOneVerticalLine(id1, id2, drawable) {
     let y2 = Math.floor(id2 / boardWidth);
 
     // Kiểm tra nếu 2 ô cùng cột
-    if (x1 == x2) {
+    if (x1 === x2) {
         // Đổi vị trí tọa độ, nếu y1 lớn hơn y2
         if (y1 > y2) {
             let t = y2;
-            y2 = y2;
+            y2 = y1;
             y1 = t;
         }
 
@@ -652,6 +697,7 @@ function checkOneVerticalLine(id1, id2, drawable) {
     // Trả về false nếu hai ô không nằm trên cùng một cột
     return false;
 }
+
 
 function returnID(x, y) {
     return x + y * boardWidth;
@@ -1076,6 +1122,37 @@ function isOkieToShuffle() {
     }
     // Nếu không có ô nào có đường đi đến ô khác thì có thể xáo trộn, trả về true
     return true;
+}
+
+function suggest() {
+    // Kiểm tra nếu mảng cells không tồn tại hoặc rỗng
+    if (!cells || cells.length === 0) {
+        console.log("Mảng cells không tồn tại hoặc rỗng.");
+        return;
+    }
+
+    // Duyệt qua từng ô trong mảng cells
+    for (let i = 0; i < cells.length - 1; i++) {
+        // Kiểm tra nếu giá trị của ô khác 0
+        if (cells[i].value !== 0) {
+            // Duyệt qua các ô còn lại trong mảng cells
+            for (let j = i + 1; j < cells.length; j++) {
+                // Kiểm tra nếu giá trị của ô khác 0
+                if (cells[j].value !== 0) {
+                    // Kiểm tra nếu có đường đi từ ô i đến ô j
+                    if (checkOKIE(i, j, false)) {
+                        // Đổi màu nền của ô i và ô j thành màu đỏ sau 1 giây
+                        setTimeout(() => {
+                            if (cells[i]) cells[i].image.style.backgroundColor = "red";
+                            if (cells[j]) cells[j].image.style.backgroundColor = "red";
+                        }, 1000);
+                        // Trả về sau khi tìm thấy cặp ô đầu tiên có đường đi, để tăng hiệu suất
+                        return;
+                    }
+                }
+            }
+        }
+    }
 }
 
 
