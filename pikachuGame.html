@@ -21,11 +21,24 @@
     <audio id="soundHint">
         <source src="audio/snd_fragment_retrievewav-14728.mp3" type="audio/mpeg">
     </audio>
+    <audio id="soundShuffle">
+        <source src="audio/shuffle-cards-46455.mp3" type="audio/mpeg">
+    </audio>
+    <audio id="soundPause">
+        <source src="audio/pause-89443.mp3" type="audio/mpeg">
+    </audio>
+    <audio id="soundNextLevel">
+        <source src="audio/teleport-14639.mp3" type="audio/mpeg">
+    </audio>
+    <audio id="soundError">
+        <source src="audio/error-126627%20(mp3cut.net).mp3" type="audio/mpeg">
+    </audio>
     <div id="game-container">
         <div id="info">
             <p id="time">Time: 200</p>
             <p id="score">Score: 500</p>
             <p id="level-label">Level: <span id="text-level"></span></p>
+            <div id="developer-info"><i class="fa-solid fa-circle-info"></i></div>
             <div id="suggest" onclick="suggest()"><i class="fa-solid fa-lightbulb"></i></div>
             <div id="next-level" onclick="nextLevel()"><i class="fa-solid fa-forward-step"></i></i></div>
             <div class="shuffle" onclick="swapCell()"><i class="fa-solid fa-shuffle"></i></div>
