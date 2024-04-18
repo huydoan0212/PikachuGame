@@ -188,11 +188,10 @@ function levelSelect() {
 
 // Hàm init để khởi tạo lại trò chơi
 function init() {
-
     if (level === 0) {
         levelSelect();
     }
-    console.log(level)
+    playSoundGame()
     document.getElementById("text-level").textContent = level; // Hiển thị cấp độ trò chơi
     info.style.display = 'block'; // Hiển thị thông tin trò chơi
     board.style.display = 'grid'; // Hiển thị bảng trò chơi
@@ -847,21 +846,21 @@ function checkInRect(id1, id2, drawable) {
             return true;
         }
     }
-// Kiểm tra từ leftX đến rightX theo hướng ngược lại
-    for (let i = leftX - 1; i >= rightX; i--) {
-        if (checkX(returnID(leftX, leftY), returnID(i, leftY)) && checkY(returnID(i, leftY), returnID(i, rightY)) && checkX(returnID(i, rightY), returnID(rightX, rightY))) {
-            if (drawable) {
-                drawLineFromXtoY(cells[returnID(leftX, leftY)].centerX, cells[returnID(leftX, leftY)].centerY, cells[returnID(i, leftY)].centerX, cells[returnID(i, leftY)].centerY, ctx);
-                drawLineFromXtoY(cells[returnID(i, leftY)].centerX, cells[returnID(i, leftY)].centerY, cells[returnID(i, rightY)].centerX, cells[returnID(i, rightY)].centerY, ctx);
-                drawLineFromXtoY(cells[returnID(i, rightY)].centerX, cells[returnID(i, rightY)].centerY, cells[returnID(rightX, rightY)].centerX, cells[returnID(rightX, rightY)].centerY, ctx);
-                setTimeout(() => {
-                    ctx.clearRect(0, 0, 630, 540);
-                }, 300);
-            }
-            return true;
-        }
-    }
-    return false;
+// // Kiểm tra từ leftX đến rightX theo hướng ngược lại
+//     for (let i = leftX - 1; i >= rightX; i--) {
+//         if (checkX(returnID(leftX, leftY), returnID(i, leftY)) && checkY(returnID(i, leftY), returnID(i, rightY)) && checkX(returnID(i, rightY), returnID(rightX, rightY))) {
+//             if (drawable) {
+//                 drawLineFromXtoY(cells[returnID(leftX, leftY)].centerX, cells[returnID(leftX, leftY)].centerY, cells[returnID(i, leftY)].centerX, cells[returnID(i, leftY)].centerY, ctx);
+//                 drawLineFromXtoY(cells[returnID(i, leftY)].centerX, cells[returnID(i, leftY)].centerY, cells[returnID(i, rightY)].centerX, cells[returnID(i, rightY)].centerY, ctx);
+//                 drawLineFromXtoY(cells[returnID(i, rightY)].centerX, cells[returnID(i, rightY)].centerY, cells[returnID(rightX, rightY)].centerX, cells[returnID(rightX, rightY)].centerY, ctx);
+//                 setTimeout(() => {
+//                     ctx.clearRect(0, 0, 630, 540);
+//                 }, 300);
+//             }
+//             return true;
+//         }
+//     }
+//     return false;
 
 }
 
@@ -1066,6 +1065,7 @@ function mainAlgorithim() {
             gameScore += 100;
             // Đặt zIndex của canvas thành 20
             myCanvas.style.zIndex = 20;
+            playSound1()
             switch (level) {
                 case 2:
                     flowToLeft()
@@ -1086,6 +1086,8 @@ function mainAlgorithim() {
             // Thêm sự kiện cho các ô
             addEventForCell();
         }
+        if (!checkOKIE(isHandle[0], isHandle[1], true)) {
+        }
         // Loại bỏ trạng thái đã chọn của 2 ô đã chọn
         cells[isHandle[0]].image.className = cells[isHandle[0]].image.className.replace(" onSelect", "");
         cells[isHandle[1]].image.className = cells[isHandle[1]].image.className.replace(" onSelect", "");
@@ -1098,6 +1100,19 @@ function mainAlgorithim() {
 
 }
 
+function playSound1() {
+    let audio = document.getElementById("sound1");
+    audio.play();
+}
+function playSoundGame() {
+    let audio = document.getElementById("soundGame");
+    audio.play();
+}
+
+function playSoundHint() {
+    let audio = document.getElementById("soundHint");
+    audio.play();
+}
 
 // Hàm isOkieToShuffle để kiểm tra xem có thể xáo trộn các ô trong trò chơi hay không
 function isOkieToShuffle() {
@@ -1125,6 +1140,7 @@ function isOkieToShuffle() {
 }
 
 function suggest() {
+    playSoundHint()
     // Kiểm tra nếu mảng cells không tồn tại hoặc rỗng
     if (!cells || cells.length === 0) {
         console.log("Mảng cells không tồn tại hoặc rỗng.");
@@ -1141,12 +1157,19 @@ function suggest() {
                 if (cells[j].value !== 0) {
                     // Kiểm tra nếu có đường đi từ ô i đến ô j
                     if (checkOKIE(i, j, false)) {
-                        // Đổi màu nền của ô i và ô j thành màu đỏ sau 1 giây
+                        // Lưu màu nền hiện tại
+                        let currentColorI = cells[i].image.style.backgroundColor;
+                        let currentColorJ = cells[j].image.style.backgroundColor;
                         setTimeout(() => {
                             if (cells[i]) cells[i].image.style.backgroundColor = "red";
                             if (cells[j]) cells[j].image.style.backgroundColor = "red";
-                        }, 1000);
-                        // Trả về sau khi tìm thấy cặp ô đầu tiên có đường đi, để tăng hiệu suất
+                        }, 100);
+                        setTimeout(() => {
+                            if (cells[i]) cells[i].image.style.backgroundColor = currentColorI;
+                            if (cells[j]) cells[j].image.style.backgroundColor = currentColorJ;
+                        }, 500);
+
+                        // Trả về sau khi tìm thấy cặp ô đầu tiên có đường đi
                         return;
                     }
                 }
@@ -1155,38 +1178,16 @@ function suggest() {
     }
 }
 
-
-// Hàm handleSwap để xử lý việc đổi chỗ các ô trong trò chơi
-function handleSwap() {
-    // Lấy phần tử reload từ DOM
-    let reload = document.getElementById('reload');
-    // Hiển thị phần tử reload
-    reload.style.display = "block";
-    // Gọi hàm swapCell để đổi chỗ các ô
-    swapCell();
-    // Sau 1000ms (1 giây), ẩn phần tử reload
-    setTimeout(() => {
-        reload.style.display = "none";
-    }, 1000);
-}
-
-
-// init();
-
 function game() {
     mainAlgorithim();
     showScore();
     drawCells()
-
     if (isOkieToShuffle()) {
-        handleSwap();
+        swapCell();
     }
 
 }
 
-// ctx.clearRect(0, 0, myCanvas.width, myCanvas.height);
-// game();
-// timeHandle();
 
 
 
