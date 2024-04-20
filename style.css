@@ -6,8 +6,10 @@
 body {
   margin: 0;
   padding: 0;
-  color: rgb(50, 205, 50);
-  font-family: "Lobster", cursive;
+  color: rgb(0, 0, 139);
+  font-family: "Jersey 10", sans-serif;
+  font-weight: 400;
+  font-style: normal;
 }
 
 img {
@@ -24,7 +26,7 @@ img {
   }
 }
 body {
-  background: url("image/R (1).jpeg") no-repeat;
+  background: url("image/OIG1.jpg") no-repeat center center;
   background-size: cover;
   margin: 0;
   padding: 0;
@@ -38,70 +40,97 @@ body {
   width: 50%;
   position: relative;
   margin: auto;
-  background: url("image/bg.jpg") no-repeat;
+  background: url("image/OIG2.jpg") no-repeat center center;
+  background-size: cover;
 }
 .container #game-container h1 {
   margin: 0;
 }
 .container #game-container #info {
   display: none;
-  padding: 35px 45px 0;
 }
 .container #game-container #info p {
-  padding: 0;
   font-size: 24px;
-  margin: 0 0 10px;
+  padding: 7px 0 0;
+  margin: 0;
 }
 .container #game-container #info #suggest {
-  background-color: rgb(50, 205, 50);
+  background-color: rgb(0, 0, 139);
   display: inline-block;
   padding: 10px 14px;
   border-radius: 4px;
-  margin-top: 5px;
+  margin-top: 7px;
   cursor: pointer;
 }
 .container #game-container #info #suggest i {
   color: white;
 }
 .container #game-container #info #developer-info {
-  background-color: rgb(50, 205, 50);
+  background-color: rgb(0, 0, 139);
   display: inline-block;
   padding: 10px 12px;
   border-radius: 4px;
-  margin-top: 5px;
+  margin-top: 7px;
   cursor: pointer;
+  position: relative;
 }
 .container #game-container #info #developer-info i {
   color: white;
 }
+.container #game-container #info #info-dev {
+  background-color: rgba(255, 255, 255, 0.7);
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  z-index: 50;
+  top: 0;
+  display: none;
+  font-size: 30px;
+  color: black;
+  font-family: Monaco, monospace;
+}
+.container #game-container #info #info-dev #close-info {
+  position: absolute;
+  right: 10px;
+  top: 10px;
+  cursor: pointer;
+}
+.container #game-container #info #info-dev .title-info {
+  font-size: 45px;
+  margin: 45px;
+}
+.container #game-container #info #info-dev div p {
+  font-size: 35px;
+  margin: 20px;
+}
 .container #game-container #info #next-level {
-  background-color: rgb(50, 205, 50);
+  background-color: rgb(0, 0, 139);
   display: inline-block;
   padding: 10px 15px;
   border-radius: 4px;
-  margin-top: 5px;
+  margin-top: 7px;
   cursor: pointer;
 }
 .container #game-container #info #next-level i {
   color: white;
 }
 .container #game-container #info .shuffle {
-  background-color: rgb(50, 205, 50);
+  background-color: rgb(0, 0, 139);
   display: inline-block;
   padding: 10px 12px;
   border-radius: 4px;
-  margin-top: 5px;
+  margin-top: 7px;
   cursor: pointer;
 }
 .container #game-container #info .shuffle i {
   color: white;
 }
 .container #game-container #info #pause {
-  background-color: rgb(50, 205, 50);
+  background-color: rgb(0, 0, 139);
   display: inline-block;
   padding: 10px 15px;
   border-radius: 4px;
-  margin-top: 5px;
+  margin-top: 7px;
   cursor: pointer;
 }
 .container #game-container #info #pause i {
@@ -109,10 +138,10 @@ body {
 }
 .container #game-container #info .overplay {
   position: absolute;
-  top: 245px;
-  left: 111px;
-  width: 540px;
-  height: 450px;
+  top: 195px;
+  left: 80px;
+  width: 600px;
+  height: 500px;
   background-color: rgba(0, 0, 0, 0.1);
   z-index: 9999;
 }
@@ -146,8 +175,7 @@ body {
   position: absolute;
 }
 .container #game-container #game-over p {
-  margin: 0;
-  margin-top: 90px;
+  margin: 90px 0 0;
   position: relative;
 }
 .container #game-container #game-over .level-container {
@@ -159,14 +187,16 @@ body {
   height: 70px;
 }
 .container #game-container #game-over .level-container .level-btn button {
-  font-family: Cambria, Cochin, Georgia, Times, "Times New Roman", serif;
+  font-family: "Jersey 10", sans-serif;
+  font-weight: 400;
+  font-style: normal;
   letter-spacing: 1px;
   font-size: 40px;
   outline: 0;
-  background-color: rgb(50, 205, 50);
+  background-color: rgb(0, 0, 139);
   color: white;
   border-radius: 20px;
-  border: 2px solid rgb(50, 205, 50);
+  border: 2px solid rgb(0, 0, 139);
   margin-bottom: 20px;
   width: 30%;
 }
@@ -186,8 +216,7 @@ body {
   position: absolute;
 }
 .container #game-container #win-game p {
-  margin: 0;
-  margin-top: 90px;
+  margin: 90px 0 0;
   position: relative;
 }
 .container #game-container #win-game .level-container {
@@ -199,14 +228,16 @@ body {
   height: 70px;
 }
 .container #game-container #win-game .level-container .level-btn button {
-  font-family: Cambria, Cochin, Georgia, Times, "Times New Roman", serif;
+  font-family: "Jersey 10", sans-serif;
+  font-weight: 400;
+  font-style: normal;
   letter-spacing: 1px;
   font-size: 40px;
   outline: 0;
-  background-color: rgb(50, 205, 50);
+  background-color: rgb(0, 0, 139);
   color: white;
   border-radius: 20px;
-  border: 2px solid rgb(50, 205, 50);
+  border: 2px solid rgb(0, 0, 139);
   margin-bottom: 20px;
   width: 30%;
 }
@@ -222,15 +253,14 @@ body {
   left: 0;
   font-size: 80px;
   z-index: 50;
-  background: url("image/R.jpeg") no-repeat;
+  background: url("image/R (1).jpeg") no-repeat center center;
   background-size: cover;
 }
 .container #game-container #level p {
-  margin: 0;
-  margin-top: 90px;
+  margin: 90px 0 0;
   position: relative;
   margin-bottom: 50px;
-  color: rgb(50, 205, 50);
+  padding: 50px 0 0;
 }
 .container #game-container #level .level-container {
   display: flex;
@@ -244,14 +274,16 @@ body {
   justify-content: center;
 }
 .container #game-container #level .level-container .level-btn button {
-  font-family: Cambria, Cochin, Georgia, Times, "Times New Roman", serif;
+  font-family: "Jersey 10", sans-serif;
+  font-weight: 400;
+  font-style: normal;
   letter-spacing: 1px;
   font-size: 40px;
   outline: 0;
-  background-color: rgb(50, 205, 50);
+  background-color: rgb(0, 0, 139);
   color: white;
   border-radius: 20px;
-  border: 2px solid rgb(50, 205, 50);
+  border: 2px solid rgb(0, 0, 139);
   margin-bottom: 20px;
   width: 30%;
 }
@@ -263,14 +295,16 @@ body {
   justify-content: center;
 }
 .container #game-container #level .level-container .select-option #choices {
-  font-family: Cambria, Cochin, Georgia, Times, "Times New Roman", serif;
+  font-family: "Jersey 10", sans-serif;
+  font-weight: 400;
+  font-style: normal;
   letter-spacing: 1px;
   font-size: 40px;
   outline: 0;
-  background-color: rgb(50, 205, 50);
+  background-color: rgb(0, 0, 139);
   color: white;
   border-radius: 20px;
-  border: 2px solid rgb(50, 205, 50);
+  border: 2px solid rgb(0, 0, 139);
   margin-bottom: 20px;
   width: 30%;
   font-size: 30px;

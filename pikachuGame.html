@@ -9,6 +9,9 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css"
           integrity="sha512-SnH5WK+bZxgPHs44uWIX+LLJAJ9/2PkPKZ5QiAj6Ta86w+fsb2TkcmfRyVX3pBnMFcV7oQPJkl9QevSCWr3W6A=="
           crossorigin="anonymous" referrerpolicy="no-referrer"/>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Jersey+10&display=swap" rel="stylesheet">
 </head>
 <body>
 <div class="container">
@@ -31,19 +34,36 @@
         <source src="audio/teleport-14639.mp3" type="audio/mpeg">
     </audio>
     <audio id="soundError">
-        <source src="audio/error-126627%20(mp3cut.net).mp3" type="audio/mpeg">
+        <source src="audio/error-4-199275.mp3" type="audio/mpeg">
+    </audio>
+    <audio id="soundWin">
+        <source src="audio/you-win-sequence-2-183949%20(mp3cut.net).mp3" type="audio/mpeg">
+    </audio>
+    <audio id="soundLose">
+        <source src="audio/533034__evretro__8-bit-game-over-soundtune.wav" type="audio/mpeg">
     </audio>
     <div id="game-container">
         <div id="info">
             <p id="time">Time: 200</p>
             <p id="score">Score: 500</p>
             <p id="level-label">Level: <span id="text-level"></span></p>
-            <div id="developer-info"><i class="fa-solid fa-circle-info"></i></div>
+            <div id="developer-info" onclick="getInfo(),pauseTime()"><i class="fa-solid fa-circle-info"></i>
+            </div>
             <div id="suggest" onclick="suggest()"><i class="fa-solid fa-lightbulb"></i></div>
             <div id="next-level" onclick="nextLevel()"><i class="fa-solid fa-forward-step"></i></i></div>
             <div class="shuffle" onclick="swapCell()"><i class="fa-solid fa-shuffle"></i></div>
             <div id="pause" class="pause"><i class="fa-solid fa-pause"></i></div>
             <div id="on-ground"></div>
+            <div id="info-dev">
+                <div id="close-info" onclick="getInfo(),timeHandle()"><i class="fa-regular fa-circle-xmark"></i></div>
+                <p class="title-info">Thông tin cá nhân</p>
+                <div><p>Họ và tên: Đoàn Quốc Huy</p>
+                    <p>MSSV: 21130374</p>
+                    <p>Lớp: DH21DTB</p>
+                    <p>Giới tính: Nam</p>
+                    <p>Quê quán: Nha Trang</p>
+                    <p>Ngày sinh: 02/12/2003</p></div>
+            </div>
         </div>
         <div id="game-board">
             <!-- <canvas id="myCanvas"></canvas> -->
@@ -62,7 +82,9 @@
                 <div class="level-btn">
                     <button class="re-btn" onclick="init()">Restart</button>
                 </div>
-
+                <div class="level-btn">
+                    <button class="re-btn" onclick="nextLevel()">NextLevel</button>
+                </div>
             </div>
         </div>
         <div id="level">

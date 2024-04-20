@@ -1,13 +1,17 @@
+
 * {
   box-sizing: border-box;
   user-select: none;
 }
 
+$colorBase: rgb(0, 0, 139);
 body {
   margin: 0;
   padding: 0;
-  color: rgb(50 205 50);
-  font-family: 'Lobster', cursive;
+  color: $colorBase;
+  font-family: "Jersey 10", sans-serif;
+  font-weight: 400;
+  font-style: normal;
 }
 
 img {
@@ -16,7 +20,6 @@ img {
 }
 
 @mixin styleOfButtonFrame() {
-  //border: 2px solid red;
   width: 100%;
   height: 100%;
   background-color: rgba(255, 255, 255, 0.842);
@@ -27,20 +30,21 @@ img {
 }
 
 @mixin styleOfParagraph() {
-  margin: 0;
-  margin-top: 90px;
+  margin: 90px 0 0;
   position: relative;
 }
 
 @mixin styleOfButton() {
-  font-family: Cambria, Cochin, Georgia, Times, 'Times New Roman', serif;
+  font-family: "Jersey 10", sans-serif;
+  font-weight: 400;
+  font-style: normal;
   letter-spacing: 1px;
   font-size: 40px;
   outline: 0;
-  background-color: rgb(50 205 50);
+  background-color: $colorBase;
   color: white;
   border-radius: 20px;
-  border: 2px solid rgb(50 205 50);
+  border: 2px solid $colorBase;
   margin-bottom: 20px;
   width: 30%;
 }
@@ -62,7 +66,7 @@ img {
 }
 
 body {
-  background: url("image/R (1).jpeg") no-repeat;
+  background: url("image/OIG1.jpg") no-repeat center center;
   background-size: cover;
 
   margin: 0;
@@ -78,7 +82,8 @@ body {
     width: 50%;
     position: relative;
     margin: auto;
-    background: url("image/bg.jpg") no-repeat;
+    background: url("image/OIG2.jpg") no-repeat center center;
+    background-size: cover;
 
 
     h1 {
@@ -87,44 +92,80 @@ body {
 
     #info {
       display: none;
-      padding: 35px 45px 0;
 
       p {
-        padding: 0;
         font-size: 24px;
-        margin: 0 0 10px;
+        padding: 7px 0 0;
+        margin: 0;
       }
 
       #suggest {
-        background-color: rgb(50 205 50);
+        background-color: $colorBase;
         display: inline-block;
         padding: 10px 14px;
         border-radius: 4px;
-        margin-top: 5px;
+        margin-top: 7px;
         cursor: pointer;
 
         i {
           color: white;
         }
       }
+
       #developer-info {
-        background-color: rgb(50 205 50);
+        background-color: $colorBase;
         display: inline-block;
         padding: 10px 12px;
         border-radius: 4px;
-        margin-top: 5px;
+        margin-top: 7px;
         cursor: pointer;
+        position: relative;
 
         i {
           color: white;
         }
+
+
       }
+
+      #info-dev {
+        background-color: rgb(255, 255, 255, 0.7);
+        position: absolute;
+        width: 100%;
+        height: 100%;
+        z-index: 50;
+        top: 0;
+        display: none;
+        font-size: 30px;
+        color: black;
+        font-family: Monaco, monospace;
+
+        #close-info {
+          position: absolute;
+          right: 10px;
+          top: 10px;
+          cursor: pointer;
+        }
+
+        .title-info {
+          font-size: 45px;
+          margin: 45px;
+        }
+
+        div {
+          p {
+            font-size: 35px;
+            margin: 20px;
+          }
+        }
+      }
+
       #next-level {
-        background-color: rgb(50 205 50);
+        background-color: $colorBase;
         display: inline-block;
         padding: 10px 15px;
         border-radius: 4px;
-        margin-top: 5px;
+        margin-top: 7px;
         cursor: pointer;
 
         i {
@@ -133,11 +174,11 @@ body {
       }
 
       .shuffle {
-        background-color: rgb(50 205 50);
+        background-color: $colorBase;
         display: inline-block;
         padding: 10px 12px;
         border-radius: 4px;
-        margin-top: 5px;
+        margin-top: 7px;
         cursor: pointer;
 
         i {
@@ -146,11 +187,11 @@ body {
       }
 
       #pause {
-        background-color: rgb(50 205 50);
+        background-color: $colorBase;
         display: inline-block;
         padding: 10px 15px;
         border-radius: 4px;
-        margin-top: 5px;
+        margin-top: 7px;
         cursor: pointer;
 
         i {
@@ -164,10 +205,10 @@ body {
 
       .overplay {
         position: absolute;
-        top: 245px;
-        left: 111px;
-        width: 540px;
-        height: 450px;
+        top: 195px;
+        left: 80px;
+        width: 600px;
+        height: 500px;
         background-color: rgba(0, 0, 0, 0.1);
         z-index: 9999;
 
@@ -251,13 +292,13 @@ body {
 
     #level {
       @include styleOfButtonFrame;
-      background: url("image/R.jpeg") no-repeat;
+      background: url("image/R (1).jpeg") no-repeat center center;
       background-size: cover;
 
       p {
         @include styleOfParagraph;
         margin-bottom: 50px;
-        color: rgb(50 205 50);
+        padding: 50px 0 0;
       }
 
       .level-container {

@@ -5,7 +5,7 @@ let rowCell = boardheight - 2; // Số hàng cho các ô (tính toán từ board
 let cellSize = 50; //Kích thước của mỗi ô theo pixel
 let typeNum = 20; // Số lượng kiểu biểu tượng (hình ảnh) khác nhau trong trò chơi
 let numEachType = 6; // Số lượng của mỗi kiểu biểu tượng được tạo ra
-const gameTime = 3000; // Giới hạn thời gian cho trò chơi trong giây
+let gameTime = 300; // Giới hạn thời gian cho trò chơi trong giây
 let info = document.getElementById("info");
 let board = document.getElementById("game-board"); //Tham chiếu đến phần tử HTML có ID "game-board"
 let myCanvas = ""; //  Tham chiếu đến phần tử canvas được tạo để vẽ trò chơi
@@ -14,7 +14,7 @@ let checkTypeNum = [];// Mảng để theo dõi số lượng của mỗi kiểu
 let cells = []; //Mảng chứa thông tin về mỗi ô, bao gồm ID, giá trị (kiểu biểu tượng), tọa độ x và y, chiều rộng, chiều cao, tọa độ tâm và tham chiếu đến phần tử HTML tương ứng cho ô
 let gameScore = 0; //Điểm hiện tại của người chơi
 let isSelecting = 0;//Cờ để chỉ ra người chơi hiện đang chọn ô hay không (0 - không chọn, 1 - chọn một ô, 2 - chọn hai ô)
-let timeLeft = 10;//Thời gian còn lại tính bằng giây
+let timeLeft = 1000;//Thời gian còn lại tính bằng giây
 let isWin = false;//Cờ để chỉ ra người chơi đã chiến thắng trò chơi hay chưa
 let selectElement = document.getElementById("choices");
 let selectedOption = null
@@ -25,6 +25,17 @@ window.addEventListener("dblclick", (event) => {
 
 for (let i = 0; i <= typeNum; i++) {
     checkTypeNum.push(0);
+}
+let infoDev = false;
+
+function getInfo() {
+    if (infoDev === false) {
+        document.getElementById('info-dev').style.display = 'block';
+        infoDev = true;
+    } else {
+        document.getElementById('info-dev').style.display = 'none';
+        infoDev = false;
+    }
 }
 
 function nextLevel() {
@@ -47,7 +58,7 @@ function getRndInteger(min, max) {
 }
 
 function drawLineFromXtoY(x1, y1, x2, y2, ctx) {
-    ctx.lineWidth = 1; // Đặt độ rộng của đường vẽ là 1 pixel
+    ctx.lineWidth = 5; // Đặt độ rộng của đường vẽ là 5 pixel
     ctx.strokeStyle = "red"; // Đặt màu sắc của đường vẽ là màu đỏ
     ctx.beginPath(); // Bắt đầu một đường vẽ mới
     ctx.moveTo(x1, y1); // Di chuyển bút vẽ đến điểm bắt đầu có tọa độ (x1, y1)
@@ -83,17 +94,19 @@ function cell(id, value, x, y) {
     this.draw = function () { // Phương thức vẽ ô
         if (this.value !== 0) { // Nếu giá trị của ô khác 0
             this.image.innerHTML = '<image src="image/pic' + this.value + '.png" alt="">'; // Đặt nội dung HTML của phần tử div là một hình ảnh
-            this.image.style.border = "2px solid rgb(50 205 50)"; // Đặt viền của phần tử div là 2px và màu xanh lá cây
+            this.image.style.border = "2px solid rgb(0,0,139)"; // Đặt viền của phần tử div là 2px và màu xanh lá cây
             this.image.style.cursor = "pointer"; // Đặt con trỏ chuột khi di chuyển qua phần tử div là con trỏ
+            this.image.style.backgroundColor = "rgba(255, 255, 255, 0.7)";
         } else { // Nếu giá trị của ô là 0
             if (this.id > boardWidth && this.id <= boardWidth * boardheight - boardWidth && this.id % boardWidth !== 0 && (this.id + 1) % boardWidth !== 0) {
-                this.image.style.border = "2px solid rgb(50 205 50)"; // Đặt viền của phần tử div là 2px và màu xanh lá cây
+                // this.image.style.border = "2px solid rgb(0,0,139)"; // Đặt viền của phần tử div là 2px và màu xanh lá cây
             } else {
                 this.image.style.border = "none"; // Không đặt viền cho phần tử div
             }
             this.image.style.cursor = "auto"; // Đặt con trỏ chuột khi di chuyển qua phần tử div là con trỏ mặc định
             this.image.innerHTML = ""; // Không đặt nội dung HTML cho phần tử div
             this.image.style.backgroundColor = "rgba(255, 255, 255, 0)"; // Đặt màu nền của phần tử div là trong suốt
+
         }
         board.appendChild(this.image); // Thêm phần tử div vào bảng
     }
@@ -163,6 +176,29 @@ function reset() {
     board.innerHTML = '';
 }
 
+function timePlay() {
+    switch (level) {
+        case 1:
+            gameTime = 300;
+            break
+        case 2:
+            gameTime = 285;
+            break
+        case 3:
+            gameTime = 270;
+            break
+        case 4:
+            gameTime = 255;
+            break
+        case 5:
+            gameTime = 240;
+            break
+        case 6:
+            gameTime = 225;
+            break
+    }
+}
+
 function levelSelect() {
     selectedOption = selectElement.options[selectElement.selectedIndex].value; // Lấy giá trị của tùy chọn được chọn từ selectElement
     switch (selectedOption) { // Đặt cấp độ trò chơi dựa trên tùy chọn được chọn
@@ -192,12 +228,15 @@ function init() {
     if (level === 0) {
         levelSelect();
     }
+    muteAll()
     playSoundGame()
+    reset()
     document.getElementById("text-level").textContent = level; // Hiển thị cấp độ trò chơi
     info.style.display = 'block'; // Hiển thị thông tin trò chơi
     board.style.display = 'grid'; // Hiển thị bảng trò chơi
     gameScore = 0; // Đặt lại điểm số trò chơi
     isSelecting = 0; // Đặt lại trạng thái đang chọn
+    timePlay()
     timeLeft = gameTime; // Đặt lại thời gian còn lại
     board.innerHTML = " <canvas id='myCanvas' width='630' height='540'></canvas>"; // Tạo một canvas mới trong bảng trò chơi
     isWin = false; // Đặt trạng thái thắng trò chơi là false
@@ -577,8 +616,11 @@ function timeHandle() {
     // Cài đặt hàm setInterval để thực hiện hàm bên trong sau mỗi 1000ms (1 giây)
     intervalId = setInterval(() => {
         // Nếu thời gian còn lại bằng 0 thì hiển thị thông báo game over
-        if (timeLeft === 0)
+        if (timeLeft === 0) {
+            muteAll()
+            playSoundLose()
             document.getElementById("game-over").style.display = "block";
+        }
         // Cập nhật thời gian còn lại lên màn hình
         document.getElementById("time").innerHTML = "Time: " + timeLeft;
         // Nếu thời gian còn lại lớn hơn 0 và trò chơi chưa thắng thì giảm thời gian còn lại đi 1
@@ -607,11 +649,16 @@ button.onclick = function () {
         onGround.classList.remove("overplay")
         timeHandle();
         isPaused = false;
+        button.innerHTML = '<i class="fa-solid fa-pause"></i>'
+        button.style.padding = '10px 15px'
     } else {
         playSoundPause()
         onGround.classList.add("overplay")
         pauseTime();
         isPaused = true;
+        button.innerHTML = '<i class="fa-solid fa-play"></i>'
+        button.style.padding = '10px 14px'
+
     }
 };
 
@@ -778,27 +825,32 @@ function checkY(id1, id2) {
     return false;
 }
 
-// Hàm checkInRect để kiểm tra xem có đường đi từ ô id1 đến ô id2 theo hình chữ nhật không và vẽ đường đi nếu có
+// Hàm checkInRect để kiểm tra xem có đường nằm trong bảng trò chơi đi từ ô id1 đến ô id2 và vẽ đường đi nếu có
 function checkInRect(id1, id2, drawable) {
+    // Tính toán tọa độ x, y của hai ô dựa trên id và chiều rộng của bảng
     let x1 = id1 % boardWidth;
     let x2 = id2 % boardWidth;
     let y1 = Math.floor(id1 / boardWidth);
     let y2 = Math.floor(id2 / boardWidth);
+
+    // Khởi tạo tọa độ của hai điểm: điểm bên trái và điểm bên phải
     let leftX = x1;
     let leftY = y1;
     let rightX = x2;
     let rightY = y2;
 
-
+    // Nếu ô thứ nhất nằm bên phải ô thứ hai, hoán đổi tọa độ của hai ô
     if (x1 > x2) {
         leftX = x2;
         rightX = x1;
         leftY = y2;
         rightY = y1;
     }
+
+    // Kiểm tra các đường đi từ dưới lên trên
     for (let i = leftY - 1; i >= rightY; i--) {
-        //Kiểm tra có đường đi giữa 2 ô cùng 1 cột leftX và từ dòng leftY đến dòng i
         if (checkY(returnID(leftX, leftY), returnID(leftX, i)) && checkX(returnID(leftX, i), returnID(rightX, i)) && checkY(returnID(rightX, i), returnID(rightX, rightY))) {
+            // Nếu có thể vẽ, vẽ đường đi và sau đó xóa sau 300ms
             if (drawable) {
                 drawLineFromXtoY(cells[returnID(leftX, leftY)].centerX, cells[returnID(leftX, leftY)].centerY, cells[returnID(leftX, i)].centerX, cells[returnID(leftX, i)].centerY, ctx);
                 drawLineFromXtoY(cells[returnID(leftX, i)].centerX, cells[returnID(leftX, i)].centerY, cells[returnID(rightX, i)].centerX, cells[returnID(rightX, i)].centerY, ctx);
@@ -807,11 +859,15 @@ function checkInRect(id1, id2, drawable) {
                     ctx.clearRect(0, 0, 630, 540);
                 }, 300);
             }
+            // Nếu có đường đi, trả về true
             return true;
         }
     }
+
+    // Kiểm tra các đường đi từ trên xuống dưới
     for (let i = leftY + 1; i <= rightY; i++) {
         if (checkY(returnID(leftX, leftY), returnID(leftX, i)) && checkX(returnID(leftX, i), returnID(rightX, i)) && checkY(returnID(rightX, i), returnID(rightX, rightY))) {
+            // Nếu có thể vẽ, vẽ đường đi và sau đó xóa sau 300ms
             if (drawable) {
                 drawLineFromXtoY(cells[returnID(leftX, leftY)].centerX, cells[returnID(leftX, leftY)].centerY, cells[returnID(leftX, i)].centerX, cells[returnID(leftX, i)].centerY, ctx);
                 drawLineFromXtoY(cells[returnID(leftX, i)].centerX, cells[returnID(leftX, i)].centerY, cells[returnID(rightX, i)].centerX, cells[returnID(rightX, i)].centerY, ctx);
@@ -820,11 +876,16 @@ function checkInRect(id1, id2, drawable) {
                     ctx.clearRect(0, 0, 630, 540);
                 }, 300);
             }
+            // Nếu có đường đi, trả về true
             return true;
         }
     }
+
+    // Kiểm tra các đường đi từ trái sang phải
     for (let i = leftX + 1; i <= rightX; i++) {
+        // Kiểm tra có đường đi giữa 2 ô cùng 1 hàng leftY và từ cột leftX đến cột i
         if (checkX(returnID(leftX, leftY), returnID(i, leftY)) && checkY(returnID(i, leftY), returnID(i, rightY)) && checkX(returnID(i, rightY), returnID(rightX, rightY))) {
+            // Nếu có thể vẽ, vẽ đường đi và sau đó xóa sau 300ms
             if (drawable) {
                 drawLineFromXtoY(cells[returnID(leftX, leftY)].centerX, cells[returnID(leftX, leftY)].centerY, cells[returnID(i, leftY)].centerX, cells[returnID(i, leftY)].centerY, ctx);
                 drawLineFromXtoY(cells[returnID(i, leftY)].centerX, cells[returnID(i, leftY)].centerY, cells[returnID(i, rightY)].centerX, cells[returnID(i, rightY)].centerY, ctx);
@@ -833,11 +894,16 @@ function checkInRect(id1, id2, drawable) {
                     ctx.clearRect(0, 0, 630, 540);
                 }, 300);
             }
+            // Nếu có đường đi, trả về true
             return true;
         }
     }
+
+    // Nếu không tìm thấy đường đi, trả về false
     return false;
 }
+
+// Hàm checkInRect để kiểm tra xem có đường nằm ngoài bảng trò chơi đi từ ô id1 đến ô id2 và vẽ đường đi nếu có
 function checkOutRect(id1, id2, drawable) {
     let x1 = id1 % boardWidth;
     let x2 = id2 % boardWidth;
@@ -966,6 +1032,8 @@ function checkOKIE(id1, id2, drawable) {
 
 function WinGame() {
     if (gameScore === 6000) {
+        muteAll()
+        playSoundWin()
         document.getElementById("win-game").style.display = "block";
         isWin = true;
     }
@@ -1010,6 +1078,7 @@ function mainAlgorithim() {
                     break
                 case 6:
                     swapColumn()
+                    break
             }
             // Thêm sự kiện cho các ô
             addEventForCell();
@@ -1042,7 +1111,9 @@ function playSoundNextLevel() {
 
 function playSoundGame() {
     let audio = document.getElementById("soundGame");
-    audio.play();
+    audio.muted = false
+    audio.play()
+
 }
 
 function playSoundHint() {
@@ -1065,6 +1136,32 @@ function playSoundError() {
     audio.volume = 1.0
     audio.play();
 }
+
+function playSoundWin() {
+    let audio = document.getElementById("soundWin");
+    audio.muted = false
+    audio.play()
+
+}
+
+function playSoundLose() {
+    let audio = document.getElementById("soundLose");
+    audio.muted = false
+    audio.play()
+}
+
+function muteAll() {
+    // Lấy tất cả các phần tử audio và video trên trang
+    let soundWin = document.getElementById('soundWin')
+    let soundLose = document.getElementById('soundLose')
+    let soundGame = document.getElementById('soundGame')
+
+    soundWin.muted = true
+    soundLose.muted = true
+    soundGame.muted = true
+
+}
+
 
 // Hàm isOkieToShuffle để kiểm tra xem có thể xáo trộn các ô trong trò chơi hay không
 function isOkieToShuffle() {
@@ -1129,11 +1226,13 @@ function suggest() {
         }
     }
 }
-document.addEventListener('keydown', function (event){
-    if(event.code === 'KeyZ'){
+
+document.addEventListener('keydown', function (event) {
+    if (event.code === 'KeyZ') {
         suggest();
     }
 })
+
 function game() {
     mainAlgorithim();
     showScore();
