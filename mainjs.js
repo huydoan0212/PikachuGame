@@ -670,6 +670,7 @@ function checkSelfChosen(id1, id2) {
 function checkValue(id1, id2) {
     return cells[id1].value === cells[id2].value;
 }
+
 // Thuật toán của game
 // Hàm checkOneHorizontalLine để kiểm tra xem hai ô có nằm trên cùng một hàng không và vẽ đường nối giữa chúng nếu có
 function checkOneHorizontalLine(id1, id2, drawable) {
@@ -971,22 +972,6 @@ function checkOutRect(id1, id2, drawable) {
             bottomY = y1;
             bottomX = x1;
         }
-        // Hướng qua phải
-        i = topX + 1;
-        while (i < boardWidth && cells[returnID(i, topY)].value === 0) {
-            if (checkX(returnID(topX, topY), returnID(i, topY)) && checkY(returnID(i, topY), returnID(i, bottomY)) && checkX(returnID(i, bottomY), returnID(bottomX, bottomY))) {
-                if (drawable) {
-                    drawLineFromXtoY(cells[returnID(topX, topY)].centerX, cells[returnID(topX, topY)].centerY, cells[returnID(i, topY)].centerX, cells[returnID(i, topY)].centerY, ctx);
-                    drawLineFromXtoY(cells[returnID(i, topY)].centerX, cells[returnID(i, topY)].centerY, cells[returnID(i, bottomY)].centerX, cells[returnID(i, bottomY)].centerY, ctx);
-                    drawLineFromXtoY(cells[returnID(i, bottomY)].centerX, cells[returnID(i, bottomY)].centerY, cells[returnID(bottomX, bottomY)].centerX, cells[returnID(bottomX, bottomY)].centerY, ctx);
-                    setTimeout(() => {
-                        ctx.clearRect(0, 0, 630, 540);
-                    }, 300);
-                }
-                return true;
-            }
-            i++;
-        }
         // Hướng qua trái
         let i = topX - 1;
         while (i >= 0 && cells[returnID(i, topY)].value === 0) {
@@ -1003,7 +988,22 @@ function checkOutRect(id1, id2, drawable) {
             }
             i--;
         }
-
+        // Hướng qua phải
+        i = topX + 1;
+        while (i < boardWidth && cells[returnID(i, topY)].value === 0) {
+            if (checkX(returnID(topX, topY), returnID(i, topY)) && checkY(returnID(i, topY), returnID(i, bottomY)) && checkX(returnID(i, bottomY), returnID(bottomX, bottomY))) {
+                if (drawable) {
+                    drawLineFromXtoY(cells[returnID(topX, topY)].centerX, cells[returnID(topX, topY)].centerY, cells[returnID(i, topY)].centerX, cells[returnID(i, topY)].centerY, ctx);
+                    drawLineFromXtoY(cells[returnID(i, topY)].centerX, cells[returnID(i, topY)].centerY, cells[returnID(i, bottomY)].centerX, cells[returnID(i, bottomY)].centerY, ctx);
+                    drawLineFromXtoY(cells[returnID(i, bottomY)].centerX, cells[returnID(i, bottomY)].centerY, cells[returnID(bottomX, bottomY)].centerX, cells[returnID(bottomX, bottomY)].centerY, ctx);
+                    setTimeout(() => {
+                        ctx.clearRect(0, 0, 630, 540);
+                    }, 300);
+                }
+                return true;
+            }
+            i++;
+        }
     }
     return false;
 }
