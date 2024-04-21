@@ -18,7 +18,7 @@
     <audio id="sound1">
         <source src="audio/cute-level-up-2-189851%20(mp3cut.net).mp3" type="audio/mpeg">
     </audio>
-    <audio id="soundGame">
+    <audio loop id="soundGame">
         <source src="audio/healing-sounds-124056%20(mp3cut.net).mp3" type="audio/mpeg">
     </audio>
     <audio id="soundHint">
@@ -66,7 +66,6 @@
             </div>
         </div>
         <div id="game-board">
-            <!-- <canvas id="myCanvas"></canvas> -->
         </div>
         <div id="game-over">
             <p>Game Over</p>
@@ -91,6 +90,7 @@
             <p>Pikachu Game</p>
             <div class="level-container">
                 <div class="select-option">
+                    <label class="label" for="choices">Choose Level</label>
                     <select name="choices" id="choices">
                         <option value="level1">Level 1</option>
                         <option value="level2">Level 2</option>
@@ -107,13 +107,6 @@
             </div>
         </div>
 
-        <div id="reload">
-            <!--            <p>No more possible selections <br> Shuffling</p>-->
-            <div id="reloader">
-            </div>
-        </div>
-
-        <!-- <canvas id="myCanvas" width="630" height="540"></canvas> -->
     </div>
 
 </div>

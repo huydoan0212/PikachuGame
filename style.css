@@ -30,6 +30,7 @@ body {
   background-size: cover;
   margin: 0;
   padding: 0;
+  text-shadow: -1px 0 white, 0 1px white, 1px 0 white, 0 -1px white;
 }
 
 .container {
@@ -59,8 +60,9 @@ body {
   display: inline-block;
   padding: 10px 14px;
   border-radius: 4px;
-  margin-top: 7px;
+  margin: 7px 10px 0;
   cursor: pointer;
+  text-shadow: none;
 }
 .container #game-container #info #suggest i {
   color: white;
@@ -70,9 +72,10 @@ body {
   display: inline-block;
   padding: 10px 12px;
   border-radius: 4px;
-  margin-top: 7px;
+  margin: 7px 10px 0;
   cursor: pointer;
   position: relative;
+  text-shadow: none;
 }
 .container #game-container #info #developer-info i {
   color: white;
@@ -108,8 +111,9 @@ body {
   display: inline-block;
   padding: 10px 15px;
   border-radius: 4px;
-  margin-top: 7px;
+  margin: 7px 10px 0;
   cursor: pointer;
+  text-shadow: none;
 }
 .container #game-container #info #next-level i {
   color: white;
@@ -119,8 +123,9 @@ body {
   display: inline-block;
   padding: 10px 12px;
   border-radius: 4px;
-  margin-top: 7px;
+  margin: 7px 10px 0;
   cursor: pointer;
+  text-shadow: none;
 }
 .container #game-container #info .shuffle i {
   color: white;
@@ -130,8 +135,9 @@ body {
   display: inline-block;
   padding: 10px 15px;
   border-radius: 4px;
-  margin-top: 7px;
+  margin: 7px 10px 0;
   cursor: pointer;
+  text-shadow: none;
 }
 .container #game-container #info #pause i {
   color: white;
@@ -293,6 +299,10 @@ body {
   display: flex;
   align-items: center;
   justify-content: center;
+  flex-direction: column;
+}
+.container #game-container #level .level-container .select-option .label {
+  font-size: 45px;
 }
 .container #game-container #level .level-container .select-option #choices {
   font-family: "Jersey 10", sans-serif;
