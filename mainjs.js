@@ -1188,8 +1188,8 @@ function isOkieToShuffle() {
 }
 
 function suggest() {
-    playSoundHint()
     if (numOfSuggest > 0 && numOfSuggest <= 3) {
+        playSoundHint()
         // Kiểm tra nếu mảng cells không tồn tại hoặc rỗng
         if (!cells || cells.length === 0) {
             console.log("Mảng cells không tồn tại hoặc rỗng.");
